@@ -1,8 +1,6 @@
 import subprocess
-
 from pathlib import Path
-
-from tkinter import Toplevel, Label, Scrollbar, Text
+from tkinter import Toplevel, Label, Scrollbar, Text, messagebox
 
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Button, PhotoImage, Scrollbar, Text, filedialog
@@ -191,7 +189,6 @@ button_3.place(
 
 
 def analizar_archivo():
-    print("Funcion para extraer llamada")  # Para depuración
     if text_area.get("1.0", "end-1c").strip():
         try:
             input_content = text_area.get("1.0", "end-1c")
@@ -204,12 +201,15 @@ def analizar_archivo():
             if resultado.stderr:
                 print("Error en el programa Fortran:", resultado.stderr)
             else:
-                print("Salida del programa Fortran:", resultado.stdout)  # Muestra la salida
+                print("Salida del programa Fortran:", resultado.stdout)
+                # Mostrar alerta de que el HTML fue generado
+                messagebox.showinfo("Éxito", "HTML generado correctamente.")
         except Exception as e:
             print(f"Error al ejecutar el analizador: {e}")
+            messagebox.showerror("Error", f"Ocurrió un error: {e}")
     else:
         print("Primero debes cargar un archivo .ORG para analizar.")
-
+        messagebox.showwarning("Advertencia", "Primero debes cargar un archivo .ORG para analizar.")
 
 # Actualizar el botón "Analizar" para que llame a la función analizar_archivo
 button_image_4 = PhotoImage(
