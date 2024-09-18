@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compiler",
+            "type": "shell",
+            "command": "gfortran",
+            "args": [
+                "-g",
+                "-Wall",
+                "-o",
+                "AnalizadorLexico.exe",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Proyecto1"
+            }
+        }
+    ]
+}
