@@ -1,4 +1,3 @@
-! archivo: Extracción.f90
 MODULE Extraccion
     USE ObjetoCaracter  ! Importamos el módulo que define el tipo de datos CaracterInfo
     IMPLICIT NONE
@@ -12,6 +11,7 @@ CONTAINS
         INTEGER :: i, j, numCaracteres, fila, columna, iostat
         CHARACTER(LEN=1000) :: linea                           ! Almacenar cada línea de entrada
         LOGICAL :: dentro_comillas                             ! Bandera para el manejo de comillas
+        CHARACTER(LEN=1) :: c
 
         fila = 1  ! Inicializamos la fila
         numCaracteres = 0  ! Contador de caracteres leídos
@@ -24,67 +24,55 @@ CONTAINS
 
             columna = 1  ! Inicializamos la columna para cada nueva línea
 
-            ! Dividir la línea en palabras y signos y almacenarlos
+            ! Procesar la línea carácter por carácter
             i = 1
-            DO WHILE (i <= LEN_TRIM(linea))
-                IF (linea(i:i) /= ' ') THEN
-                    ! Comienza o termina texto entre comillas dobles
-                    IF (linea(i:i) == '"') THEN
-                        IF (.NOT. dentro_comillas) THEN
-                            ! Inicio de texto entre comillas
-                            dentro_comillas = .TRUE.
-                            j = i + 1
-                            DO WHILE (j <= LEN_TRIM(linea) .AND. linea(j:j) /= '"')
-                                j = j + 1
-                            END DO
-                            IF (j <= LEN_TRIM(linea)) THEN
-                                j = j + 1  ! Incluir la comilla de cierre
-                            END IF
-                            ! Almacenar solo el contenido dentro de las comillas
-                            palabra = linea(i:j-1)
-                            CALL almacenarToken(listaCaracteres, palabra, fila, columna, numCaracteres)
-                            columna = columna + LEN_TRIM(palabra)
-                            i = j
+            DO WHILE (i <= LEN(linea))  ! Procesamos la línea completa, incluyendo los espacios
+                c = linea(i:i)
 
-                            ! Se cierra el texto entre comillas
-                            dentro_comillas = .FALSE.  
-
-                            ! Verificar si el siguiente carácter es un signo de puntuación y separarlo
-                            IF (i <= LEN_TRIM(linea) .AND. (linea(i:i) == ';' .OR. linea(i:i) == ',' .OR. linea(i:i) == '.' .OR. linea(i:i) == '%')) THEN
-                                palabra = linea(i:i)
-                                CALL almacenarToken(listaCaracteres, palabra, fila, columna, numCaracteres)
-                                i = i + 1
-                            END IF
-                            CYCLE
-                        END IF
-                    ELSE IF (linea(i:i) == '%') THEN
-                        ! Manejar el símbolo '%' como un token independiente
-                        palabra = linea(i:i)
-                        j = i + 1
-                    ELSE
-                        ! No estamos dentro de comillas, procesamos como palabra o signo
-                        IF (linea(i:i) == '.' .OR. linea(i:i) == ',' .OR. linea(i:i) == ';' .OR. linea(i:i) == ':') THEN
-                            ! Es un signo de puntuación
-                            palabra = linea(i:i)
-                            j = i + 1
-                        ELSE
-                            ! Es parte de una palabra o número
-                            j = i
-                            DO WHILE (j <= LEN_TRIM(linea) .AND. linea(j:j) /= ' ' .AND. &
-                                     linea(j:j) /= '.' .AND. linea(j:j) /= ',' .AND. linea(j:j) /= ';' .AND. linea(j:j) /= ':' .AND. linea(j:j) /= '%')
-                                j = j + 1
-                            END DO
-                            palabra = linea(i:j-1)
-                        END IF
-                    END IF
-
-                    ! Almacenar el token procesado
-                    CALL almacenarToken(listaCaracteres, palabra, fila, columna, numCaracteres)
-                    columna = columna + LEN_TRIM(palabra)  ! Actualizar la columna
-                    i = j  ! Actualizar 'i' para continuar desde el final de la palabra o signo
-                ELSE
-                    i = i + 1  ! Avanzar al siguiente carácter
+                ! Si el carácter es un espacio, solo se incrementa la columna y se ignora el token
+                IF (c == ' ' .OR. c == CHAR(9)) THEN
+                    columna = columna + 1
+                    i = i + 1
+                    CYCLE
                 END IF
+
+                ! Si encontramos comillas, procesar el contenido entre comillas como un token
+                IF (c == '"') THEN
+                    j = i + 1
+                    DO WHILE (j <= LEN(linea) .AND. linea(j:j) /= '"')
+                        j = j + 1
+                    END DO
+                    IF (j <= LEN(linea)) THEN
+                        j = j + 1  ! Incluir la comilla de cierre
+                    END IF
+                    palabra = linea(i:j-1)
+                    CALL almacenarToken(listaCaracteres, palabra, fila, columna, numCaracteres)
+                    columna = columna + LEN_TRIM(palabra)
+                    i = j
+                    CYCLE
+                END IF
+
+                ! Procesar símbolos como tokens individuales
+                IF (c == '!' .OR. c == '#' .OR. c == '$' .OR. c == '%' .OR. c == '&' .OR. c == '@' .OR. &
+                    c == ':' .OR. c == ';' .OR. c == ',' .OR. c == '.') THEN
+                    CALL almacenarToken(listaCaracteres, c, fila, columna, numCaracteres)
+                    columna = columna + 1
+                    i = i + 1
+                    CYCLE
+                END IF
+
+                ! Procesar palabras (secuencias de letras y números)
+                j = i
+                DO WHILE (j <= LEN(linea) .AND. linea(j:j) /= ' ' .AND. linea(j:j) /= CHAR(9) .AND. &
+                         linea(j:j) /= '!' .AND. linea(j:j) /= '#' .AND. linea(j:j) /= '$' .AND. &
+                         linea(j:j) /= '%' .AND. linea(j:j) /= '&' .AND. linea(j:j) /= '@' .AND. &
+                         linea(j:j) /= ':' .AND. linea(j:j) /= ';' .AND. linea(j:j) /= ',' .AND. linea(j:j) /= '.')
+                    j = j + 1
+                END DO
+                palabra = linea(i:j-1)
+                CALL almacenarToken(listaCaracteres, TRIM(palabra), fila, columna, numCaracteres)  ! Eliminar espacios
+                columna = columna + LEN_TRIM(palabra)
+                i = j
             END DO
 
             fila = fila + 1  ! Siguiente fila
@@ -94,6 +82,22 @@ CONTAINS
         CALL mostrarLista(listaCaracteres, numCaracteres)
 
     END SUBROUTINE ExtraccionDeCaracteres
+
+    SUBROUTINE almacenarToken(lista, token, fila, columna, numCaracteres)
+        TYPE(CaracterInfo), ALLOCATABLE :: lista(:)
+        CHARACTER(LEN=*), INTENT(IN) :: token
+        INTEGER, INTENT(IN) :: fila, columna
+        INTEGER, INTENT(INOUT) :: numCaracteres
+
+        ! Almacenar el token eliminando posibles espacios al principio y al final
+        numCaracteres = numCaracteres + 1
+        IF (.NOT. ALLOCATED(lista)) THEN
+            ALLOCATE(lista(1))
+        ELSE
+            CALL aumentarLista(lista, numCaracteres)
+        END IF
+        lista(numCaracteres) = CaracterInfo(TRIM(token), fila, columna)
+    END SUBROUTINE almacenarToken
 
     SUBROUTINE aumentarLista(lista, newSize)
         TYPE(CaracterInfo), ALLOCATABLE :: lista(:)
@@ -108,30 +112,15 @@ CONTAINS
         lista = temp
     END SUBROUTINE aumentarLista
 
-    SUBROUTINE almacenarToken(lista, token, fila, columna, numCaracteres)
-        TYPE(CaracterInfo), ALLOCATABLE :: lista(:)
-        CHARACTER(LEN=*), INTENT(IN) :: token
-        INTEGER, INTENT(IN) :: fila, columna
-        INTEGER, INTENT(INOUT) :: numCaracteres
-
-        numCaracteres = numCaracteres + 1
-        IF (.NOT. ALLOCATED(lista)) THEN
-            ALLOCATE(lista(1))
-        ELSE
-            CALL aumentarLista(lista, numCaracteres)
-        END IF
-        lista(numCaracteres) = CaracterInfo(TRIM(token), fila, columna)
-    END SUBROUTINE almacenarToken
-
     SUBROUTINE mostrarLista(lista, size)
         TYPE(CaracterInfo), ALLOCATABLE :: lista(:)
         INTEGER, INTENT(IN) :: size
         INTEGER :: i
 
         PRINT *, "LISTA de Caracteres y su posición:"
-        !DO i = 1, size
-        !    PRINT *, TRIM(lista(i)%caracter), " - Fila:", lista(i)%fila, "Columna:", lista(i)%columna
-        !END DO
+        DO i = 1, size
+            PRINT *, TRIM(lista(i)%caracter), " - Fila:", lista(i)%fila, "Columna:", lista(i)%columna
+        END DO
     END SUBROUTINE mostrarLista
 
 END MODULE Extraccion

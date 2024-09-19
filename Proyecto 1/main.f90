@@ -3,6 +3,7 @@ PROGRAM Main
     USE ObjetoCaracter   ! Módulo que define el tipo de datos CaracterInfo
     USE Extraccion       ! Módulo que contiene la lógica de extracción de caracteres
     USE Automata         ! Módulo que contiene el autómata para procesar los caracteres
+    USE OI               ! Módulo que contiene la lógica para obtener tokens válidos
     USE Reporte          ! Módulo que genera el reporte HTML
     IMPLICIT NONE
 
@@ -20,5 +21,9 @@ PROGRAM Main
 
     ! Generar el reporte HTML basado en los tokens reconocidos y no reconocidos
     CALL generarReporte()
+
+    ! OI obtiene la lista de tokens válidos
+    CALL procesarTokensOI()
+
 
 END PROGRAM Main
