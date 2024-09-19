@@ -5,6 +5,7 @@ PROGRAM Main
     USE Automata         ! Módulo que contiene el autómata para procesar los caracteres
     USE OI               ! Módulo que contiene la lógica para obtener tokens válidos
     USE Reporte          ! Módulo que genera el reporte HTML
+    USE Calculos         ! Módulo que inicia los cálculos con la lista de información
     IMPLICIT NONE
 
     ! Llamar a la subrutina para generar la lista de caracteres
@@ -24,6 +25,9 @@ PROGRAM Main
 
     ! OI obtiene la lista de tokens válidos
     CALL procesarTokensOI()
+
+    ! Calculos inicia los cálculos con la lista de información
+    CALL iniciarCalculos()
 
 
 END PROGRAM Main
