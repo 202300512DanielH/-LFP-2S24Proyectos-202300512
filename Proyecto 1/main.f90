@@ -6,6 +6,7 @@ PROGRAM Main
     USE OI               ! Módulo que contiene la lógica para obtener tokens válidos
     USE Reporte          ! Módulo que genera el reporte HTML
     USE Calculos         ! Módulo que inicia los cálculos con la lista de información
+    !USE Grafica         ! Módulo que genera la gráfica
     IMPLICIT NONE
 
     ! Llamar a la subrutina para generar la lista de caracteres
@@ -28,6 +29,10 @@ PROGRAM Main
 
     ! Calculos inicia los cálculos con la lista de información
     CALL iniciarCalculos()
+
+    ! Grafica genera la gráfica con la información de los cálculos
+   !CALL generarGrafica()
+
 
 
 END PROGRAM Main

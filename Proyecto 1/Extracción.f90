@@ -117,10 +117,10 @@ CONTAINS
         INTEGER, INTENT(IN) :: size
         INTEGER :: i
 
-        PRINT *, "LISTA de Caracteres y su posición:"
-        DO i = 1, size
-            PRINT *, TRIM(lista(i)%caracter), " - Fila:", lista(i)%fila, "Columna:", lista(i)%columna
-        END DO
+        ! PRINT *, "LISTA de Caracteres y su posición:"
+        ! DO i = 1, size
+        !     PRINT *, TRIM(lista(i)%caracter), " - Fila:", lista(i)%fila, "Columna:", lista(i)%columna
+        ! END DO
     END SUBROUTINE mostrarLista
 
 END MODULE Extraccion

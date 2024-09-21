@@ -48,42 +48,42 @@ CONTAINS
         DO i = 1, SIZE(reconocidos)
             ! Si encontramos un token de tipo "reservada" y valor "grafica"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "grafica") THEN
-                PRINT *, "Token 'grafica' encontrado. Buscando el valor de la gráfica..."
+                !PRINT *, "Token 'grafica' encontrado. Buscando el valor de la gráfica..."
                 graficaEncontrada = .TRUE.
                 CYCLE
             END IF
 
             ! Si encontramos un token de tipo "reservada" y valor "continente"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "continente") THEN
-                PRINT *, "Token 'continente' encontrado. Buscando el valor del continente..."
+                !PRINT *, "Token 'continente' encontrado. Buscando el valor del continente..."
                 continenteEncontrado = .TRUE.
                 CYCLE
             END IF
 
             ! Si encontramos un token de tipo "reservada" y valor "pais"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "pais") THEN
-                PRINT *, "Token 'pais' encontrado. Buscando el valor del país..."
+                !PRINT *, "Token 'pais' encontrado. Buscando el valor del país..."
                 paisEncontrado = .TRUE.
                 CYCLE
             END IF
 
             ! Si encontramos un token de tipo "reservada" y valor "poblacion"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "poblacion") THEN
-                PRINT *, "Token 'poblacion' encontrado. Buscando el valor de la población..."
+                !PRINT *, "Token 'poblacion' encontrado. Buscando el valor de la población..."
                 poblacionEncontrada = .TRUE.
                 CYCLE
             END IF
 
             ! Si encontramos un token de tipo "reservada" y valor "saturacion"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "saturacion") THEN
-                PRINT *, "Token 'saturacion' encontrado. Buscando el valor de la saturación..."
+                !PRINT *, "Token 'saturacion' encontrado. Buscando el valor de la saturación..."
                 saturacionEncontrada = .TRUE.
                 CYCLE
             END IF
 
             ! Si encontramos un token de tipo "reservada" y valor "bandera"
             IF (TRIM(reconocidos(i)%tipo) == "reservada" .AND. TRIM(reconocidos(i)%valor) == "bandera") THEN
-                PRINT *, "Token 'bandera' encontrado. Buscando el valor de la bandera..."
+                !PRINT *, "Token 'bandera' encontrado. Buscando el valor de la bandera..."
                 banderaEncontrada = .TRUE.
                 CYCLE
             END IF
@@ -93,7 +93,7 @@ CONTAINS
             ! Valor de gráfica
             IF (graficaEncontrada .AND. TRIM(reconocidos(i)%tipo) == "cadena") THEN
                 CALL almacenarInformacion("nombre de gráfica", TRIM(reconocidos(i)%valor))
-                PRINT *, "Nombre de gráfica almacenado:", TRIM(reconocidos(i)%valor)
+                !PRINT *, "Nombre de gráfica almacenado:", TRIM(reconocidos(i)%valor)
                 graficaEncontrada = .FALSE.
                 CYCLE
             END IF
@@ -101,7 +101,7 @@ CONTAINS
             ! Valor de continente
             IF (continenteEncontrado .AND. TRIM(reconocidos(i)%tipo) == "cadena") THEN
                 CALL almacenarInformacion("nombre de continente", TRIM(reconocidos(i)%valor))
-                PRINT *, "Nombre de continente almacenado:", TRIM(reconocidos(i)%valor)
+                !PRINT *, "Nombre de continente almacenado:", TRIM(reconocidos(i)%valor)
                 continenteEncontrado = .FALSE.
                 CYCLE
             END IF
@@ -109,7 +109,7 @@ CONTAINS
             ! Valor de país
             IF (paisEncontrado .AND. TRIM(reconocidos(i)%tipo) == "cadena") THEN
                 CALL almacenarInformacion("nombre de país", TRIM(reconocidos(i)%valor))
-                PRINT *, "Nombre de país almacenado:", TRIM(reconocidos(i)%valor)
+                !PRINT *, "Nombre de país almacenado:", TRIM(reconocidos(i)%valor)
                 paisEncontrado = .FALSE.
                 CYCLE
             END IF
@@ -119,7 +119,7 @@ CONTAINS
                 READ(reconocidos(i)%valor, *) valorEntero
                 WRITE(valorCadena, "(I10)") valorEntero  ! Convertir el entero en cadena
                 CALL almacenarInformacion("población", TRIM(valorCadena))
-                PRINT *, "Población almacenada:", valorEntero
+                !PRINT *, "Población almacenada:", valorEntero
                 poblacionEncontrada = .FALSE.
                 CYCLE
             END IF
@@ -129,7 +129,7 @@ CONTAINS
                 READ(reconocidos(i)%valor, *) valorEntero
                 WRITE(valorCadena, "(I10)") valorEntero  ! Convertir el entero en cadena
                 CALL almacenarInformacion("saturación", TRIM(valorCadena))
-                PRINT *, "Saturación almacenada:", valorEntero
+                !PRINT *, "Saturación almacenada:", valorEntero
                 saturacionEncontrada = .FALSE.
                 CYCLE
             END IF
@@ -137,7 +137,7 @@ CONTAINS
             ! Valor de bandera
             IF (banderaEncontrada .AND. TRIM(reconocidos(i)%tipo) == "cadena") THEN
                 CALL almacenarInformacion("bandera", TRIM(reconocidos(i)%valor))
-                PRINT *, "Bandera almacenada:", TRIM(reconocidos(i)%valor)
+                !PRINT *, "Bandera almacenada:", TRIM(reconocidos(i)%valor)
                 banderaEncontrada = .FALSE.
                 CYCLE
             END IF
@@ -181,10 +181,10 @@ CONTAINS
         END IF
 
         ! Recorrer y mostrar todos los datos en la lista
-        DO i = 1, SIZE(listaInformacion)
-            PRINT *, "Información: Dato:", TRIM(listaInformacion(i)%dato), &
-                     "- Valor:", TRIM(listaInformacion(i)%valordato)
-        END DO
+        ! DO i = 1, SIZE(listaInformacion)
+        !     PRINT *, "Información: Dato:", TRIM(listaInformacion(i)%dato), &
+        !              "- Valor:", TRIM(listaInformacion(i)%valordato)
+        ! END DO
     END SUBROUTINE mostrarInformacion
 
 END MODULE OI

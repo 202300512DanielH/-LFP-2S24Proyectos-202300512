@@ -1,6 +1,7 @@
 import subprocess
 from pathlib import Path
-from tkinter import Toplevel, Label, Scrollbar, Text, messagebox
+from tkinter import Toplevel, Label, Scrollbar, Text, messagebox, PhotoImage
+from PIL import Image, ImageTk
 
 # Explicit imports to satisfy Flake8
 from tkinter import Tk, Canvas, Button, PhotoImage, Scrollbar, Text, filedialog
@@ -81,7 +82,7 @@ def cargar_archivo_org():
         # Limpiar el área de texto antes de mostrar el contenido nuevo
         text_area.delete(1.0, "end")  
         text_area.insert("end", contenido)  # Mostrar el contenido en el área de texto
-        print(f"Archivo cargado: {ruta_archivo_guardado}")  # Información para depuración
+        #print(f"Archivo cargado: {ruta_archivo_guardado}")  # Información para depuración
 
 # Actualizar el botón "Cargar Archivo .ORG" para que llame a la función cargar_archivo_org
 button_image_1 = PhotoImage(
@@ -188,12 +189,15 @@ button_3.place(
 
 
 
+from tkinter import PhotoImage
+from PIL import Image, ImageTk  # Importar PIL para redimensionar la imagen
+
 def analizar_archivo():
     if text_area.get("1.0", "end-1c").strip():
         try:
             input_content = text_area.get("1.0", "end-1c")
             resultado = subprocess.run(
-                ["./main"],
+                ["./main"],  # Asumiendo que este es tu programa que genera la salida
                 input=input_content,
                 capture_output=True,
                 text=True
@@ -201,15 +205,43 @@ def analizar_archivo():
             if resultado.stderr:
                 print("Error en el programa Fortran:", resultado.stderr)
             else:
-                print("Salida del programa Fortran:", resultado.stdout)
-                # Mostrar alerta de que el HTML fue generado
-                messagebox.showinfo("Éxito", "HTML generado correctamente.")
+                salida = resultado.stdout
+                print(salida)  # Para ver la salida completa
+
+                # Extraer los valores de país, población, etc.
+                lines = salida.splitlines()
+                pais = lines[0].split(":")[-1].strip().replace('"', '')  # Extrae "Mexico"
+                poblacion = lines[2].split(":")[-1].strip()  # Extrae "119713"
+                ruta_bandera = lines[4].split(":")[-1].strip().replace('"', '')  # Extrae la ruta de la bandera
+
+                # Actualizar los textos en el canvas
+                canvas.itemconfig(text_pais, text=pais)  # Actualiza con el nombre del país
+                canvas.itemconfig(text_poblacion, text=poblacion)  # Actualiza con la población
+
+                # Cargar y redimensionar la nueva imagen
+                try:
+                    # Usar PIL para redimensionar la imagen
+                    image = Image.open(ruta_bandera)  # Abrir la imagen
+                    image_resized = image.resize((150, 100))  # Redimensionar la imagen (ajusta los valores según lo que necesites)
+                    nueva_imagen = ImageTk.PhotoImage(image_resized)  # Convertir a formato PhotoImage
+
+                    canvas.itemconfig(image_2, image=nueva_imagen)
+                    canvas.image = nueva_imagen  # Mantener una referencia a la imagen
+                except Exception as e:
+                    print(f"Error al cargar la imagen: {e}")
+                    messagebox.showerror("Error", f"No se pudo cargar la imagen de la bandera: {e}")
+
+                # Mostrar alerta de que el análisis fue realizado correctamente
+                messagebox.showinfo("Éxito", "Análisis realizado correctamente.")
         except Exception as e:
             print(f"Error al ejecutar el analizador: {e}")
             messagebox.showerror("Error", f"Ocurrió un error: {e}")
     else:
         print("Primero debes cargar un archivo .ORG para analizar.")
         messagebox.showwarning("Advertencia", "Primero debes cargar un archivo .ORG para analizar.")
+
+
+
 
 # Actualizar el botón "Analizar" para que llame a la función analizar_archivo
 button_image_4 = PhotoImage(
@@ -286,23 +318,25 @@ canvas.create_text(
     font=("Inter", 12 * -1)
 )
 
-canvas.create_text(
+# Guardar los elementos de texto para poder modificarlos después
+text_pais = canvas.create_text(
     638.0,
     417.0,
     anchor="nw",
-    text="Fill 1",
+    text="",  # Texto temporal que luego será sustituido
     fill="#000000",
     font=("Inter", 12 * -1)
 )
 
-canvas.create_text(
+text_poblacion = canvas.create_text(
     639.0,
     474.0,
     anchor="nw",
-    text="Fill 2",
+    text="",  # Texto temporal que luego será sustituido
     fill="#000000",
     font=("Inter", 12 * -1)
 )
+
 
 button_image_6 = PhotoImage(
     file=relative_to_assets("button_6.png"))
@@ -323,21 +357,30 @@ button_6.place(
     height=32.0
 )
 
-image_image_1 = PhotoImage(
-    file=relative_to_assets("image_1.png"))
+# Cargar y redimensionar la primera imagen (image_1.png)
+image_1_path = relative_to_assets("image_2.png")  # Ruta de la imagen
+image_1_original = Image.open(image_1_path)  # Abrir la imagen con PIL
+image_1_resized = image_1_original.resize((300, 250))  # Redimensionar (ajusta el tamaño a lo que necesites)
+image_image_1 = ImageTk.PhotoImage(image_1_resized)  # Convertir a PhotoImage para Tkinter
+
 image_1 = canvas.create_image(
     767.0,
     206.0,
     image=image_image_1
 )
 
-image_image_2 = PhotoImage(
-    file=relative_to_assets("image_2.png"))
+# Cargar y redimensionar la segunda imagen (image_2.png)
+image_2_path = relative_to_assets("image_1.png")  # Ruta de la imagen
+image_2_original = Image.open(image_2_path)  # Abrir la imagen con PIL
+image_2_resized = image_2_original.resize((150, 100))  # Redimensionar (ajusta el tamaño a lo que necesites)
+image_image_2 = ImageTk.PhotoImage(image_2_resized)  # Convertir a PhotoImage para Tkinter
+
 image_2 = canvas.create_image(
     827.0,
     447.0,
     image=image_image_2
 )
+
 
 window.resizable(False, False)
 window.mainloop()

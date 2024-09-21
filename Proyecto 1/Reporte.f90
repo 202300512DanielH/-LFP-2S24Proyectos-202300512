@@ -68,7 +68,7 @@ CONTAINS
         WRITE(10, '(A)') "</body></html>"
         CLOSE(10)
 
-        PRINT *, "Reporte generado correctamente en 'reporte.html'."
+        !PRINT *, "Reporte generado correctamente en 'reporte.html'."
     END SUBROUTINE generarReporte
 
 END MODULE Reporte

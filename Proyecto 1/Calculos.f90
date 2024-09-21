@@ -43,7 +43,7 @@ CONTAINS
         DO i = 1, SIZE(listaInformacion)
             IF (TRIM(listaInformacion(i)%dato) == 'nombre de gráfica') THEN
                 nombreGrafica = TRIM(listaInformacion(i)%valordato)
-                PRINT *, "Iniciando Cálculos. Nombre de la gráfica:", nombreGrafica
+                !PRINT *, "Iniciando Cálculos. Nombre de la gráfica:", nombreGrafica
                 EXIT
             END IF
         END DO

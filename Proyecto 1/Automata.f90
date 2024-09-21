@@ -46,8 +46,8 @@ CONTAINS
         END DO
 
         ! Imprimir resultados de depuración
-        PRINT *, "Total de tokens reconocidos:", numReconocidos
-        PRINT *, "Total de tokens no reconocidos:", numNoReconocidos
+        !PRINT *, "Total de tokens reconocidos:", numReconocidos
+        !PRINT *, "Total de tokens no reconocidos:", numNoReconocidos
         CALL mostrarTokens(reconocidos, numReconocidos, "RECONOCIDOS")
         CALL mostrarTokens(noReconocidos, numNoReconocidos, "NO RECONOCIDOS")
     END SUBROUTINE procesarTokens
@@ -126,13 +126,13 @@ CONTAINS
         CHARACTER(LEN=*), INTENT(IN) :: titulo
         INTEGER :: i
 
-        PRINT *, titulo, ":"
+        !PRINT *, titulo, ":"
         IF (ALLOCATED(lista) .AND. SIZE(lista) > 0) THEN
-            DO i = 1, numElementos
-                PRINT *, "Token:", TRIM(lista(i)%valor), "- Tipo:", TRIM(lista(i)%tipo), "- Fila:", lista(i)%fila, "- Columna:", lista(i)%columna
-            END DO
+            ! DO i = 1, numElementos
+            !     PRINT *, "Token:", TRIM(lista(i)%valor), "- Tipo:", TRIM(lista(i)%tipo), "- Fila:", lista(i)%fila, "- Columna:", lista(i)%columna
+            ! END DO
         ELSE
-            PRINT *, "Lista no asignada o vacía."
+            !PRINT *, "Lista no asignada o vacía."
         END IF
     END SUBROUTINE mostrarTokens
 
