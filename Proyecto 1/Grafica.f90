@@ -1,14 +1,30 @@
 MODULE Grafica
     USE Calculos  ! Importar el módulo Calculos para acceder a los datos
+    USE Automata ! Importar el módulo Automata para acceder a las funciones de validación
     IMPLICIT NONE
 
 CONTAINS
 
-    SUBROUTINE generarGrafica()
-        INTEGER :: i, j
-        CHARACTER(LEN=100) :: nombreContinente, nombrePais, tempNombreGrafica, color
-        INTEGER :: saturacionContinente, saturacionPais
-        CHARACTER(LEN=256) :: nombreArchivoDot
+SUBROUTINE generarGrafica()
+    INTEGER :: i, j
+    CHARACTER(LEN=100) :: nombreContinente, nombrePais, tempNombreGrafica, color
+    INTEGER :: saturacionContinente, saturacionPais
+    CHARACTER(LEN=256) :: nombreArchivoDot
+
+    ! Verificar si hay tokens no reconocidos
+    IF (ALLOCATED(noReconocidos) .AND. SIZE(noReconocidos) > 0) THEN
+        PRINT *, "N/A"
+        ! Crear un archivo .dot vacío
+        nombreArchivoDot = 'grafico_vacio.dot'
+        OPEN(UNIT=10, FILE=nombreArchivoDot, STATUS='REPLACE')
+        WRITE(10,*) 'digraph G {}'
+        CLOSE(10)
+
+        ! Generar la imagen PNG en blanco
+        CALL SYSTEM("dot -Tpng grafico_vacio.dot -o grafico.png")
+        PRINT *, "Archivo .png en blanco generado con éxito: grafico_vacio.png"
+        RETURN
+    END IF
 
         ! Verificar si los datos están asignados
         IF (TRIM(nombreGrafica) == "") THEN

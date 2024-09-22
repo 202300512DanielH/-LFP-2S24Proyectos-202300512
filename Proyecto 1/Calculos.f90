@@ -1,5 +1,6 @@
 MODULE Calculos
     USE OI           ! Importar el módulo OI para acceder a la lista de información
+    USE Automata     ! Importar el módulo Automata para acceder a las funciones de validación
     IMPLICIT NONE
 
     TYPE Pais
@@ -28,6 +29,12 @@ CONTAINS
         CHARACTER(LEN=100) :: valordatoTrimmed
         CHARACTER(LEN=100) :: paisSeleccionado, banderaSeleccionada, continenteSeleccionado
         INTEGER :: poblacionSeleccionada
+
+        ! Verificar si hay tokens no reconocidos
+        IF (ALLOCATED(noReconocidos) .AND. SIZE(noReconocidos) > 0) THEN
+            PRINT *, "N/A"
+            RETURN
+        END IF
 
         ! Verificamos si la lista de información está asignada y tiene al menos un elemento
         IF (.NOT. ALLOCATED(listaInformacion)) THEN

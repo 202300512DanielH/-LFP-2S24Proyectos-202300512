@@ -9,7 +9,6 @@ from tkinter import Tk, Canvas, Button, PhotoImage, Scrollbar, Text, filedialog
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\danie.000\Documents\LFP\Proyectos\Proyecto 1\build\assets\frame0")
 
-global imagen_grafico
 
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
@@ -239,23 +238,44 @@ def analizar_archivo():
                     print("El archivo grafico.png no fue encontrado.")
                     messagebox.showwarning("Advertencia", "El archivo grafico.png no fue generado.")
 
-                # Verificar si la segunda imagen (bandera) fue actualizada y cargarla
-                ruta_bandera = lines[4].split(":")[-1].strip().replace('"', '')  # Extraer la ruta de la bandera
-                if Path(ruta_bandera).is_file():
-                    try:
-                        bandera_image = Image.open(ruta_bandera)  # Abrir la imagen de la bandera
-                        bandera_resized = bandera_image.resize((150, 100))  # Redimensionar la imagen de la bandera
-                        nueva_imagen_bandera = ImageTk.PhotoImage(bandera_resized)  # Convertir a formato PhotoImage
+                # Condición para mostrar grafico.png si pais o poblacion son "N/A"
+                if pais == "N/A" or poblacion == "N/A":
+                    print("País o población es 'N/A', mostrando grafico.png en lugar de la bandera.")
 
-                        # Actualizar el canvas con la nueva imagen de la bandera
-                        canvas.itemconfig(image_2, image=nueva_imagen_bandera)
-                        canvas.image = nueva_imagen_bandera  # Mantener una referencia a la imagen
-                    except Exception as e:
-                        print(f"Error al cargar la imagen de la bandera: {e}")
-                        messagebox.showerror("Error", f"No se pudo cargar la imagen de la bandera: {e}")
+                    # Usar grafico.png en lugar de la bandera si pais o poblacion es "N/A"
+                    if Path(ruta_grafico).is_file():
+                        try:
+                            bandera_fallback_image = Image.open(ruta_grafico)  # Abrir grafico.png como reemplazo
+                            bandera_fallback_resized = bandera_fallback_image.resize((150, 100))  # Redimensionar la imagen
+                            imagen_grafico_bandera = ImageTk.PhotoImage(bandera_fallback_resized)  # Convertir a PhotoImage
+
+                            # Actualizar el canvas con grafico.png en lugar de la bandera
+                            canvas.itemconfig(image_2, image=imagen_grafico_bandera)
+                            canvas.image = imagen_grafico_bandera  # Mantener referencia a la imagen
+                        except Exception as e:
+                            print(f"Error al cargar grafico.png como imagen de reemplazo: {e}")
+                            messagebox.showerror("Error", f"No se pudo cargar grafico.png como imagen de reemplazo: {e}")
+                    else:
+                        print("El archivo grafico.png no fue encontrado como reemplazo.")
+                        messagebox.showwarning("Advertencia", "No se encontró grafico.png como imagen de respaldo.")
                 else:
-                    print("El archivo de la bandera no fue encontrado.")
-                    messagebox.showwarning("Advertencia", "El archivo de la bandera no fue generado.")
+                    # Verificar si la segunda imagen (bandera) fue actualizada y cargarla normalmente
+                    ruta_bandera = lines[4].split(":")[-1].strip().replace('"', '')  # Extraer la ruta de la bandera
+                    if Path(ruta_bandera).is_file():
+                        try:
+                            bandera_image = Image.open(ruta_bandera)  # Abrir la imagen de la bandera
+                            bandera_resized = bandera_image.resize((150, 100))  # Redimensionar la imagen de la bandera
+                            nueva_imagen_bandera = ImageTk.PhotoImage(bandera_resized)  # Convertir a formato PhotoImage
+
+                            # Actualizar el canvas con la nueva imagen de la bandera
+                            canvas.itemconfig(image_2, image=nueva_imagen_bandera)
+                            canvas.image = nueva_imagen_bandera  # Mantener una referencia a la imagen
+                        except Exception as e:
+                            print(f"Error al cargar la imagen de la bandera: {e}")
+                            messagebox.showerror("Error", f"No se pudo cargar la imagen de la bandera: {e}")
+                    else:
+                        print("El archivo de la bandera no fue encontrado.")
+                        messagebox.showwarning("Advertencia", "El archivo de la bandera no fue generado.")
 
                 # Mostrar alerta de que el análisis fue realizado correctamente
                 messagebox.showinfo("Éxito", "Análisis realizado correctamente.")
@@ -265,6 +285,8 @@ def analizar_archivo():
     else:
         print("Primero debes cargar un archivo .ORG para analizar.")
         messagebox.showwarning("Advertencia", "Primero debes cargar un archivo .ORG para analizar.")
+
+
 
 
 
@@ -294,10 +316,16 @@ def mostrar_acerca_de():
     # Crear una nueva ventana
     ventana_acerca_de = Toplevel(window)
     ventana_acerca_de.title("Acerca de")
-    ventana_acerca_de.geometry("400x200")
+    ventana_acerca_de.geometry("400x300")  # Ajustar el tamaño de la ventana para incluir la imagen
     ventana_acerca_de.configure(bg="#1A936F")  # Mismo color de fondo que la ventana principal
 
+    # Cargar la imagen
+    imagen = Image.open("AcercaDe.png")
+    imagen = imagen.resize((100, 100), Image.LANCZOS)  # Redimensionar la imagen si es necesario
+    imagen_tk = ImageTk.PhotoImage(imagen)
+
     # Crear el contenido de la ventana "Acerca de"
+    Label(ventana_acerca_de, image=imagen_tk, bg="#1A936F").pack(pady=10)
     Label(ventana_acerca_de, text="Estudiante: Daniel Andreé Hernandez Flores", bg="#1A936F", fg="#FBFFFE", font=("Inter", 12)).pack(pady=10)
     Label(ventana_acerca_de, text="Carné: 202300512", bg="#1A936F", fg="#FBFFFE", font=("Inter", 12)).pack(pady=10)
     Label(ventana_acerca_de, text="Curso: Lenguajes Formales y de Programación", bg="#1A936F", fg="#FBFFFE", font=("Inter", 12)).pack(pady=10)
@@ -305,6 +333,9 @@ def mostrar_acerca_de():
 
     # Desactivar la capacidad de cambiar el tamaño de la ventana "Acerca de"
     ventana_acerca_de.resizable(False, False)
+
+    # Mantener una referencia a la imagen para evitar que sea recolectada por el garbage collector
+    ventana_acerca_de.imagen_tk = imagen_tk
 
 button_image_5 = PhotoImage(
     file=relative_to_assets("button_5.png"))

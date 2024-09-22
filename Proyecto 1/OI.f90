@@ -21,7 +21,7 @@ CONTAINS
 
         ! Verificar si hay tokens no reconocidos
         IF (ALLOCATED(noReconocidos) .AND. SIZE(noReconocidos) > 0) THEN
-            PRINT *, "No se harán datos de lecturas de archivos parcial o totalmente erróneos"
+            PRINT *, "N/A"
             RETURN
         END IF
 
