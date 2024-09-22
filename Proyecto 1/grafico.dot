@@ -1,0 +1,20 @@
+ digraph G {
+     node [shape=box, style=filled];
+     "Corto #1" [label="Corto #1"];
+     "Corto #1" -> "America del Norte";
+     "America del Norte" [label="America del Norte Saturación:           61 ", fillcolor="orange"                                                                                            ];
+     "America del Norte" -> "Canada";
+     "Canada" [label="Canada Saturación:           75 ", fillcolor="orange"                                                                                            ];
+     "America del Norte" -> "Mexico";
+     "Mexico" [label="Mexico Saturación:           35 ", fillcolor="green"                                                                                             ];
+     "America del Norte" -> "Estados unidos";
+     "Estados unidos" [label="Estados unidos Saturación:           73 ", fillcolor="orange"                                                                                            ];
+     "Corto #1" -> "America del Sur";
+     "America del Sur" [label="America del Sur Saturación:           99 ", fillcolor="red"                                                                                               ];
+     "America del Sur" -> "Cabo verde";
+     "Cabo verde" [label="Cabo verde Saturación:           99 ", fillcolor="red"                                                                                               ];
+     "Corto #1" -> "Oceania";
+     "Oceania" [label="Oceania Saturación:           74 ", fillcolor="orange"                                                                                            ];
+     "Oceania" -> "Indonesia";
+     "Indonesia" [label="Indonesia Saturación:           74 ", fillcolor="orange"                                                                                            ];
+ }

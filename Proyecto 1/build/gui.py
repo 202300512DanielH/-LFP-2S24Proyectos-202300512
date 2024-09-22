@@ -9,6 +9,8 @@ from tkinter import Tk, Canvas, Button, PhotoImage, Scrollbar, Text, filedialog
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\danie.000\Documents\LFP\Proyectos\Proyecto 1\build\assets\frame0")
 
+global imagen_grafico
+
 def relative_to_assets(path: str) -> Path:
     return ASSETS_PATH / Path(path)
 
@@ -193,6 +195,8 @@ from tkinter import PhotoImage
 from PIL import Image, ImageTk  # Importar PIL para redimensionar la imagen
 
 def analizar_archivo():
+    global imagen_grafico  # Aseguramos que la referencia a la imagen sea global
+    
     if text_area.get("1.0", "end-1c").strip():
         try:
             input_content = text_area.get("1.0", "end-1c")
@@ -212,24 +216,46 @@ def analizar_archivo():
                 lines = salida.splitlines()
                 pais = lines[0].split(":")[-1].strip().replace('"', '')  # Extrae "Mexico"
                 poblacion = lines[2].split(":")[-1].strip()  # Extrae "119713"
-                ruta_bandera = lines[4].split(":")[-1].strip().replace('"', '')  # Extrae la ruta de la bandera
 
                 # Actualizar los textos en el canvas
                 canvas.itemconfig(text_pais, text=pais)  # Actualiza con el nombre del país
                 canvas.itemconfig(text_poblacion, text=poblacion)  # Actualiza con la población
 
-                # Cargar y redimensionar la nueva imagen
-                try:
-                    # Usar PIL para redimensionar la imagen
-                    image = Image.open(ruta_bandera)  # Abrir la imagen
-                    image_resized = image.resize((150, 100))  # Redimensionar la imagen (ajusta los valores según lo que necesites)
-                    nueva_imagen = ImageTk.PhotoImage(image_resized)  # Convertir a formato PhotoImage
+                # Verificar si el archivo grafico.png ha sido generado
+                ruta_grafico = "grafico.png"
+                if Path(ruta_grafico).is_file():
+                    try:
+                        # Usar PIL para cargar y redimensionar la imagen del gráfico
+                        grafico_image = Image.open(ruta_grafico)  # Abrir la imagen del gráfico
+                        grafico_resized = grafico_image.resize((300, 250))  # Redimensionar la imagen del gráfico
+                        imagen_grafico = ImageTk.PhotoImage(grafico_resized)  # Convertir a formato PhotoImage
 
-                    canvas.itemconfig(image_2, image=nueva_imagen)
-                    canvas.image = nueva_imagen  # Mantener una referencia a la imagen
-                except Exception as e:
-                    print(f"Error al cargar la imagen: {e}")
-                    messagebox.showerror("Error", f"No se pudo cargar la imagen de la bandera: {e}")
+                        # Actualizar el canvas con la nueva imagen del gráfico
+                        canvas.itemconfig(image_1, image=imagen_grafico)
+                    except Exception as e:
+                        print(f"Error al cargar la imagen grafico.png: {e}")
+                        messagebox.showerror("Error", f"No se pudo cargar la imagen del gráfico: {e}")
+                else:
+                    print("El archivo grafico.png no fue encontrado.")
+                    messagebox.showwarning("Advertencia", "El archivo grafico.png no fue generado.")
+
+                # Verificar si la segunda imagen (bandera) fue actualizada y cargarla
+                ruta_bandera = lines[4].split(":")[-1].strip().replace('"', '')  # Extraer la ruta de la bandera
+                if Path(ruta_bandera).is_file():
+                    try:
+                        bandera_image = Image.open(ruta_bandera)  # Abrir la imagen de la bandera
+                        bandera_resized = bandera_image.resize((150, 100))  # Redimensionar la imagen de la bandera
+                        nueva_imagen_bandera = ImageTk.PhotoImage(bandera_resized)  # Convertir a formato PhotoImage
+
+                        # Actualizar el canvas con la nueva imagen de la bandera
+                        canvas.itemconfig(image_2, image=nueva_imagen_bandera)
+                        canvas.image = nueva_imagen_bandera  # Mantener una referencia a la imagen
+                    except Exception as e:
+                        print(f"Error al cargar la imagen de la bandera: {e}")
+                        messagebox.showerror("Error", f"No se pudo cargar la imagen de la bandera: {e}")
+                else:
+                    print("El archivo de la bandera no fue encontrado.")
+                    messagebox.showwarning("Advertencia", "El archivo de la bandera no fue generado.")
 
                 # Mostrar alerta de que el análisis fue realizado correctamente
                 messagebox.showinfo("Éxito", "Análisis realizado correctamente.")
@@ -239,7 +265,6 @@ def analizar_archivo():
     else:
         print("Primero debes cargar un archivo .ORG para analizar.")
         messagebox.showwarning("Advertencia", "Primero debes cargar un archivo .ORG para analizar.")
-
 
 
 
@@ -360,7 +385,7 @@ button_6.place(
 # Cargar y redimensionar la primera imagen (image_1.png)
 image_1_path = relative_to_assets("image_2.png")  # Ruta de la imagen
 image_1_original = Image.open(image_1_path)  # Abrir la imagen con PIL
-image_1_resized = image_1_original.resize((300, 250))  # Redimensionar (ajusta el tamaño a lo que necesites)
+image_1_resized = image_1_original.resize((325, 250))  # Redimensionar (ajusta el tamaño a lo que necesites)
 image_image_1 = ImageTk.PhotoImage(image_1_resized)  # Convertir a PhotoImage para Tkinter
 
 image_1 = canvas.create_image(

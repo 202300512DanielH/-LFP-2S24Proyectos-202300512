@@ -15,13 +15,14 @@ MODULE Calculos
         TYPE(Pais), ALLOCATABLE :: paises(:)
     END TYPE Continente
 
+    CHARACTER(LEN=100) :: nombreGrafica = ""     ! Nombre de la gráfica
+    TYPE(Continente), ALLOCATABLE :: continentes(:)  ! Lista de continentes
+
 CONTAINS
 
     SUBROUTINE iniciarCalculos()
         INTEGER :: i, j, numPaises, idxContinente
-        TYPE(Continente), ALLOCATABLE :: continentes(:)
         LOGICAL :: continenteEncontrado
-        CHARACTER(LEN=100) :: nombreGrafica
         INTEGER :: tempInt, ioStat
         REAL :: tempReal, sumaSaturacion, menorSaturacionPais, menorSaturacionContinente
         CHARACTER(LEN=100) :: valordatoTrimmed
@@ -43,7 +44,6 @@ CONTAINS
         DO i = 1, SIZE(listaInformacion)
             IF (TRIM(listaInformacion(i)%dato) == 'nombre de gráfica') THEN
                 nombreGrafica = TRIM(listaInformacion(i)%valordato)
-                !PRINT *, "Iniciando Cálculos. Nombre de la gráfica:", nombreGrafica
                 EXIT
             END IF
         END DO
@@ -67,22 +67,15 @@ CONTAINS
             SELECT CASE (TRIM(listaInformacion(i)%dato))
 
             CASE ('nombre de continente')
-                ! Encontramos un nuevo continente, incrementar el contador y almacenar el nombre
                 idxContinente = idxContinente + 1
-                IF (ALLOCATED(continentes)) THEN
-                    ! Redimensionamos el arreglo de continentes para añadir uno nuevo
-                    CALL REALLOCATE_CONTINENTES(continentes, idxContinente)
-                ELSE
-                    ALLOCATE(continentes(idxContinente))
-                END IF
+                CALL REALLOCATE_CONTINENTES(continentes, idxContinente)
                 continentes(idxContinente)%nombre = valordatoTrimmed
-                ALLOCATE(continentes(idxContinente)%paises(0))  ! Inicializamos la lista de países
-                continentes(idxContinente)%saturacion = 0.0  ! Inicializamos la saturación del continente
+                ALLOCATE(continentes(idxContinente)%paises(0))  
+                continentes(idxContinente)%saturacion = 0.0  
                 continenteEncontrado = .TRUE.
 
             CASE ('nombre de país')
                 IF (continenteEncontrado) THEN
-                    ! Agregar un nuevo país al último continente encontrado
                     numPaises = SIZE(continentes(idxContinente)%paises)
                     numPaises = numPaises + 1
                     CALL REALLOCATE_PAISES(continentes(idxContinente)%paises, numPaises)
@@ -91,7 +84,6 @@ CONTAINS
 
             CASE ('población')
                 IF (continenteEncontrado .AND. numPaises > 0) THEN
-                    ! Intentar convertir el valor a entero
                     READ(valordatoTrimmed, *, IOSTAT=ioStat) tempInt
                     IF (ioStat == 0) THEN
                         continentes(idxContinente)%paises(numPaises)%poblacion = tempInt
@@ -103,7 +95,6 @@ CONTAINS
 
             CASE ('saturación')
                 IF (continenteEncontrado .AND. numPaises > 0) THEN
-                    ! Intentar convertir el valor a real
                     READ(valordatoTrimmed, *, IOSTAT=ioStat) tempReal
                     IF (ioStat == 0) THEN
                         continentes(idxContinente)%paises(numPaises)%saturacion = tempReal
@@ -135,34 +126,21 @@ CONTAINS
             END IF
         END DO
 
-        ! Inicializar las variables para el país con menor saturación
+        ! Encontrar el país con menor saturación
         menorSaturacionPais = HUGE(0.0)
-        menorSaturacionContinente = HUGE(0.0)
         paisSeleccionado = ""
         continenteSeleccionado = ""
         banderaSeleccionada = ""
         poblacionSeleccionada = 0
 
-        ! Encontrar el país con menor saturación
         DO idxContinente = 1, SIZE(continentes)
             DO i = 1, SIZE(continentes(idxContinente)%paises)
                 IF (continentes(idxContinente)%paises(i)%saturacion < menorSaturacionPais) THEN
-                    ! Actualizamos con el país de menor saturación
                     menorSaturacionPais = continentes(idxContinente)%paises(i)%saturacion
-                    menorSaturacionContinente = continentes(idxContinente)%saturacion
                     paisSeleccionado = continentes(idxContinente)%paises(i)%nombre
                     continenteSeleccionado = continentes(idxContinente)%nombre
                     banderaSeleccionada = continentes(idxContinente)%paises(i)%bandera
                     poblacionSeleccionada = continentes(idxContinente)%paises(i)%poblacion
-                ELSE IF (continentes(idxContinente)%paises(i)%saturacion == menorSaturacionPais) THEN
-                    ! Si hay empate en saturación, seleccionamos el país del continente con menor saturación
-                    IF (continentes(idxContinente)%saturacion < menorSaturacionContinente) THEN
-                        menorSaturacionContinente = continentes(idxContinente)%saturacion
-                        paisSeleccionado = continentes(idxContinente)%paises(i)%nombre
-                        continenteSeleccionado = continentes(idxContinente)%nombre
-                        banderaSeleccionada = continentes(idxContinente)%paises(i)%bandera
-                        poblacionSeleccionada = continentes(idxContinente)%paises(i)%poblacion
-                    END IF
                 END IF
             END DO
         END DO
@@ -181,7 +159,6 @@ CONTAINS
         INTEGER, INTENT(IN) :: newSize
         TYPE(Continente), ALLOCATABLE :: temp(:)
 
-        ! Redimensionar el arreglo de continentes manteniendo los valores existentes
         ALLOCATE(temp(SIZE(continentes)))
         temp = continentes
         DEALLOCATE(continentes)
@@ -194,7 +171,6 @@ CONTAINS
         INTEGER, INTENT(IN) :: newSize
         TYPE(Pais), ALLOCATABLE :: temp(:)
 
-        ! Redimensionar el arreglo de países manteniendo los valores existentes
         ALLOCATE(temp(SIZE(paises)))
         temp = paises
         DEALLOCATE(paises)
