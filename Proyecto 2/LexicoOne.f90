@@ -11,21 +11,24 @@ MODULE LexicoOne
 
 CONTAINS
 
-    ! Subrutina para analizar los caracteres y asignar tokens, ignorando comentarios de bloque
+    ! Subrutina para analizar los caracteres y capturar comentarios de línea
     SUBROUTINE analizar_lexico(lista, noReconocidos)
         TYPE(ListaCaracteres), INTENT(INOUT) :: lista
         TYPE(ListaNoReconocidos), INTENT(OUT) :: noReconocidos
-        INTEGER :: i, j, total_no_reconocidos
+        INTEGER :: i, j, total_no_reconocidos, fila_actual
         CHARACTER(LEN=1) :: caracter_actual
         LOGICAL :: en_comentario_bloque
+        CHARACTER(LEN=500) :: comentario_linea
 
         total_no_reconocidos = 0
         en_comentario_bloque = .FALSE.
+        comentario_linea = ""
 
         ! Realizamos el análisis léxico
         i = 1
         DO WHILE (i <= SIZE(lista%caracteres))
             caracter_actual = lista%caracteres(i)%valor
+            fila_actual = lista%caracteres(i)%posicionFila  ! Obtenemos el número de fila actual
 
             ! Ignorar caracteres dentro de un comentario de bloque
             IF (en_comentario_bloque) THEN
@@ -47,6 +50,25 @@ CONTAINS
                     en_comentario_bloque = .TRUE.
                     i = i + 2  ! Saltar "/*"
                     CYCLE
+                END IF
+            END IF
+
+            ! Detectar el inicio de un comentario de línea "//"
+            IF (caracter_actual == '/' .AND. i < SIZE(lista%caracteres)) THEN
+                IF (lista%caracteres(i + 1)%valor == '/') THEN
+                    ! Capturamos el comentario completo hasta el final de la línea
+                    comentario_linea = comentario_linea // 'Comentario detectado: '
+                    i = i + 2  ! Saltar el "//"
+                    DO WHILE (i <= SIZE(lista%caracteres))
+                        IF (lista%caracteres(i)%posicionFila /= fila_actual) THEN
+                            EXIT  ! Terminamos el comentario al cambiar de fila
+                        END IF
+                        comentario_linea = comentario_linea // '"' // TRIM(lista%caracteres(i)%valor) // '" '
+                        i = i + 1
+                    END DO
+                    PRINT *, TRIM(comentario_linea)  ! Imprimir el comentario detectado
+                    comentario_linea = ""  ! Limpiar la variable para el siguiente comentario
+                    CYCLE  ! Continuar con la siguiente iteración después del comentario
                 END IF
             END IF
 
