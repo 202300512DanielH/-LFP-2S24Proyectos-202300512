@@ -1,11 +1,13 @@
 PROGRAM Main
     USE ExtractorModule  ! Usamos el módulo que contiene 'ListaCaracteres'
+    USE LexicoOne  ! Usamos el módulo LexicoOne para el análisis léxico
     IMPLICIT NONE
 
     INTEGER :: i, numLineas
     CHARACTER(LEN=200), ALLOCATABLE :: texto(:)  ! Declaración correcta del arreglo dinámico de texto
     CHARACTER(LEN=200) :: linea  ! Para leer cada línea de entrada
-    TYPE(ListaCaracteres) :: lista  ! Cambio el nombre de la variable para evitar conflicto con el tipo
+    TYPE(ListaCaracteres) :: lista  ! Variable para almacenar los caracteres
+    TYPE(ListaNoReconocidos) :: noReconocidos  ! Lista para caracteres no reconocidos
 
     ! Leer número de líneas a procesar
     READ(*,*) numLineas
@@ -22,8 +24,11 @@ PROGRAM Main
     ! Procesar el texto y extraer los caracteres
     CALL extraer_caracteres(texto, lista)
 
-    ! Imprimir los caracteres extraídos (puedes cambiar esto para realizar otro tipo de procesamiento)
-    CALL imprimir_caracteres(lista)
+    ! Analizar los caracteres y asignar tokens
+    CALL analizar_lexico(lista, noReconocidos)
+
+    ! Imprimir los resultados del análisis léxico
+    CALL imprimir_analisis(lista, noReconocidos)
 
     ! Liberamos la memoria
     DEALLOCATE(texto)
