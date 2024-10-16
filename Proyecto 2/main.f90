@@ -2,6 +2,7 @@ PROGRAM Main
     USE ExtractorModule  ! Usamos el módulo que contiene 'ListaCaracteres'
     USE LexicoOne  ! Usamos el módulo LexicoOne para el análisis léxico
     USE LexicoTwo  ! Usamos el módulo LexicoTwo para limpiar la lista y eliminar "Sin definir"
+    USE LexicoThree  ! Usamos el módulo LexicoThree para agregar 'Léxico' a la lista
     IMPLICIT NONE
 
     INTEGER :: i, numLineas
@@ -9,6 +10,7 @@ PROGRAM Main
     CHARACTER(LEN=200) :: linea  ! Para leer cada línea de entrada
     TYPE(ListaCaracteres) :: lista  ! Variable para almacenar los caracteres
     TYPE(ListaNoReconocidos) :: noReconocidos  ! Lista para caracteres no reconocidos
+    TYPE(ListaLexico) :: lista_lexico  ! Lista para caracteres con 'Léxico' agregado
 
     ! Leer número de líneas a procesar
     PRINT *, 'Ingrese el número de líneas de texto:'
@@ -31,13 +33,19 @@ PROGRAM Main
     CALL analizar_lexico(lista, noReconocidos)
 
     ! Imprimir los resultados del análisis léxico
-    CALL imprimir_analisis(lista, noReconocidos)
+    !CALL imprimir_analisis(lista, noReconocidos)
 
     ! Limpiar la lista eliminando los caracteres con token "Sin definir"
-    !CALL limpiar_lista(lista)
+    CALL limpiar_lista(lista)
 
     ! Imprimir la lista filtrada sin los "Sin definir"
     CALL imprimir_lista_limpia(lista)
+
+    ! Agregar 'Léxico' a cada carácter de la lista limpia
+    CALL agregar_lexico(lista, lista_lexico)
+
+    ! Imprimir la lista con 'Léxico' agregado
+    CALL imprimir_lista_con_lexico(lista_lexico)
 
     ! Liberamos la memoria
     DEALLOCATE(texto)

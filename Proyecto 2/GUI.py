@@ -286,7 +286,7 @@ def ejecutar_analisis():
         if stderr:
             messagebox.showerror("Error", f"Ocurrió un error al ejecutar Fortran:\n{stderr}")
         else:
-            messagebox.showinfo("Resultado", f"Salida de Fortran:\n{stdout}")
+            messagebox.showinfo("Resultado", f"Analisis completado con éxito.")
             print(f"Salida de Fortran:\n{stdout}")
 
     except FileNotFoundError:
