@@ -134,6 +134,7 @@ CONTAINS
         total_no_reconocidos = 0
         DO j = 1, SIZE(lista%caracteres)
             IF (lista%caracteres(j)%token == 'desconocido') THEN
+                lista%caracteres(j)%tipo = 'Léxico'
                 total_no_reconocidos = total_no_reconocidos + 1
                 noReconocidos%caracteres(total_no_reconocidos) = lista%caracteres(j)
             END IF
