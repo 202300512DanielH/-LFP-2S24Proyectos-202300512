@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compiler",
+            "type": "shell",
+            "command": "gfortran",
+            "args": [
+                "-g",
+                "-Wall",
+                "-o",
+                "main.exe",
+                "main.f90",
+                "Extractor.f90",
+                "Caracter.f90",
+                "LexicoOne.f90",
+                "LexicoTwo.f90"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}

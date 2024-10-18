@@ -1,13 +1,16 @@
 PROGRAM Main
-    USE ExtractorModule  ! Usamos el módulo que contiene 'ListaCaracteres'
-    USE LexicoOne  ! Usamos el módulo LexicoOne para el análisis léxico
+    USE ExtractorModule   ! Contiene 'ListaCaracteres'
+    USE LexicoOne         ! Para el análisis léxico
+    USE LexicoTwo         ! Filtrado de tokens reconocidos
     IMPLICIT NONE
 
     INTEGER :: i, numLineas
     CHARACTER(LEN=200), ALLOCATABLE :: texto(:)  ! Arreglo dinámico de texto
-    CHARACTER(LEN=200) :: linea  ! Para leer cada línea de entrada
-    TYPE(ListaCaracteres) :: lista  ! Variable para almacenar los caracteres
-    TYPE(ListaErrores) :: errores  ! Lista para caracteres no reconocidos
+    CHARACTER(LEN=200) :: linea                 ! Para leer cada línea de entrada
+    TYPE(ListaCaracteres) :: lista              ! Almacena los caracteres extraídos
+    TYPE(ListaErrores) :: errores               ! Lista de errores no reconocidos
+    TYPE(ListaCaracteres) :: listaLimpia        ! Lista de tokens reconocidos
+
 
     ! Leer número de líneas a procesar
     READ(*,*) numLineas
@@ -27,8 +30,13 @@ PROGRAM Main
     ! Analizar los caracteres y asignar tokens, generando lista de errores
     CALL analizar_lexico(lista, errores)
 
-    ! Imprimir los caracteres reconocidos y los errores
-    CALL imprimir_analisis(lista, errores)
+    ! Filtrar tokens reconocidos y generar lista limpia
+    CALL filtrar_tokens_reconocidos(lista, listaLimpia)
+
+    CALL imprimir_lista_limpia(listaLimpia)
+
+    ! Imprimir los errores léxicos desde LexicoTwo
+    CALL imprimir_errores_lexico_two(errores)
 
     ! Liberamos la memoria
     DEALLOCATE(texto)

@@ -1,3 +1,4 @@
+!Archivo LexicoOne.f90
 MODULE LexicoOne
     USE CaracterModule
     USE ExtractorModule
@@ -156,6 +157,18 @@ SUBROUTINE analizar_lexico(lista, errores)
         CASE ('"')
             lista%caracteres(i)%token = 'comillas'
             lista%caracteres(i)%descripcion = 'Comillas'
+            total_reconocidos = total_reconocidos + 1
+            lista%caracteres(i)%correlativo = total_reconocidos
+        
+        CASE ('*')
+            lista%caracteres(i)%token = 'asterisco'
+            lista%caracteres(i)%descripcion = 'asterisco'
+            total_reconocidos = total_reconocidos + 1
+            lista%caracteres(i)%correlativo = total_reconocidos
+        
+        CASE ('/')
+            lista%caracteres(i)%token = 'barra'
+            lista%caracteres(i)%descripcion = 'Barra'
             total_reconocidos = total_reconocidos + 1
             lista%caracteres(i)%correlativo = total_reconocidos
 
