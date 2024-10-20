@@ -1,6 +1,7 @@
 from tkinter import Tk, Canvas, Button, Text, Scrollbar, RIGHT, Y, X, HORIZONTAL, VERTICAL, Frame, ttk, filedialog, messagebox
 import os
 import subprocess
+import json
 
 window = Tk()
 
@@ -313,6 +314,74 @@ button_2.place(
     height=49.0
 )
 
+import json
+
+def mostrar_tokens():
+    # Crear una nueva ventana para mostrar los tokens
+    ventana_tokens = Tk()
+    ventana_tokens.title("Tokens")
+    ventana_tokens.geometry("800x400")
+    ventana_tokens.configure(bg="#212121")
+
+    # Frame para la tabla y su scrollbar
+    frame_tokens = Frame(ventana_tokens, bg="#212121")
+    frame_tokens.pack(expand=True, fill='both', padx=10, pady=10)
+
+    # Scrollbar vertical
+    scrollbar_y = Scrollbar(frame_tokens, orient=VERTICAL)
+    scrollbar_y.pack(side=RIGHT, fill=Y)
+
+    # Crear tabla con estilo personalizado
+    style = ttk.Style()
+    style.configure("Treeview", 
+                    background="#212121", 
+                    foreground="white", 
+                    fieldbackground="#212121", 
+                    rowheight=25, 
+                    font=("Inter", 11))
+    style.configure("Treeview.Heading", 
+                    background="#323232", 
+                    foreground="white", 
+                    font=("Inter", 12, "bold"))
+
+    columns = ("correlativo", "lexema", "tipo", "fila", "columna")
+    table_tokens = ttk.Treeview(frame_tokens, columns=columns, show="headings", 
+                                yscrollcommand=scrollbar_y.set, style="Treeview")
+
+    # Definir encabezados
+    for col in columns:
+        table_tokens.heading(col, text=col.capitalize())
+        table_tokens.column(col, anchor="center", width=150)
+
+    # Configurar el scrollbar
+    scrollbar_y.config(command=table_tokens.yview)
+
+    # Cargar datos del archivo JSON
+    try:
+        with open("tokens.json", "r", encoding="utf-8", errors="replace") as file:
+            data = json.load(file)
+            for token in data["tokens"]:
+                valores = (
+                    token["correlativo"],
+                    token["lexema"],
+                    token["tipo"],
+                    token["fila"],
+                    token["columna"]
+                )
+                table_tokens.insert('', 'end', values=valores)
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró el archivo tokens.json")
+    except json.JSONDecodeError:
+        messagebox.showerror("Error", "El archivo JSON tiene un formato inválido")
+
+
+    # Empaquetar la tabla en el frame
+    table_tokens.pack(expand=True, fill='both')
+
+    ventana_tokens.resizable(False, False)
+    ventana_tokens.mainloop()
+
+
 button_3 = Button(
     text="Tokens",
     borderwidth=0,
@@ -320,9 +389,10 @@ button_3 = Button(
     relief="flat",
     bg="#00A9FF",
     fg="white",
-    activebackground="#008BD1",  # Tono más oscuro al hacer clic
+    activebackground="#008BD1",
     activeforeground="white",
-    font=("Inter Black", 11)
+    font=("Inter Black", 11),
+    command=mostrar_tokens  # Vincula el botón a la función mostrar_tokens
 )
 button_3.place(
     x=306.0,

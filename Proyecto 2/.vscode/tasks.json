@@ -11,10 +11,8 @@
                 "-o",
                 "main.exe",
                 "main.f90",
-                "Extractor.f90",
-                "Caracter.f90",
-                "LexicoOne.f90",
-                "LexicoTwo.f90"
+                "token.f90",
+                "error.f90"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
