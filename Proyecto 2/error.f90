@@ -1,15 +1,15 @@
 MODULE error
     implicit none
 
-    type :: Err
+    type :: Fail
         CHARACTER(LEN = 100) :: token_no_reconocido
         CHARACTER(LEN = 100) :: mensaje_error
         integer :: fila
         integer :: columna
-    End type Err
+    End type Fail
 
     ! Declaración de un arreglo dinámico para almacenar los errores
-    type(Err), ALLOCATABLE :: error_array(:)
+    type(Fail), ALLOCATABLE :: error_array(:)
 
 contains
 
@@ -18,9 +18,9 @@ contains
         CHARACTER(LEN=*), INTENT(IN) :: token_no_reconocido
         CHARACTER(LEN=*), INTENT(IN) :: mensaje_error
         integer, INTENT(IN) :: fila, columna
-        type(Err) :: nuevo_error
+        type(Fail) :: nuevo_error
         integer :: n
-        type(Err), ALLOCATABLE :: temp_array(:)
+        type(Fail), ALLOCATABLE :: temp_array(:)
 
         ! Inicializar el error con los valores dados
         nuevo_error%token_no_reconocido = token_no_reconocido
@@ -51,18 +51,17 @@ contains
         if (.NOT. ALLOCATED(error_array)) then
             print *, "No hay errores léxicos."
         else
-            print *, "Errores léxicos encontrados: ", size(error_array)
             DO i = 1, size(error_array)
                 write(str_fila, '(I0)') error_array(i)%fila
                 write(str_columna, '(I0)') error_array(i)%columna
 
-                print *, "Token no reconocido: ", trim(error_array(i)%token_no_reconocido)
-                print *, "Mensaje de error: ", trim(error_array(i)%mensaje_error)
-                print *, "Fila: ", trim(str_fila)
+                print *, "Tipo de error: Error léxico"
+                print *, "Linea: ", trim(str_fila)
                 print *, "Columna: ", trim(str_columna)
+                print *, "Token no reconocido: ", trim(error_array(i)%token_no_reconocido)
+                print *, "Descripción: ", trim(error_array(i)%mensaje_error)
                 print *, "---------------------------------"
             END DO
         end if
     end subroutine imprimir_errores
-
 END MODULE error

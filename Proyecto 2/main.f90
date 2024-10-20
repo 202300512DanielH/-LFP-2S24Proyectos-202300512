@@ -119,79 +119,85 @@ program analizador_lexico
                 else
                     !Palabras reservadas de contenedor
                     if ((aux_tkn == 'Etiqueta')) then
-                        call agregar_token(aux_tkn, 'tk_etiqueta', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_etiqueta', fila, columna)
                     
                     elseif ((aux_tkn == 'Boton')) then
-                        call agregar_token(aux_tkn, 'tk_boton', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_boton', fila, columna)
                     
                     elseif ((aux_tkn == 'Check')) then
-                        call agregar_token(aux_tkn, 'tk_boton', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_check', fila, columna)
 
                     elseif ((aux_tkn == 'RadioBoton')) then
-                        call agregar_token(aux_tkn, 'tk_ra_boton', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_ra_boton', fila, columna)
                     
                     elseif ((aux_tkn == 'Texto')) then
-                        call agregar_token(aux_tkn, 'tk_texto', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_texto', fila, columna)
                     
                     elseif ((aux_tkn == 'AreaTexto')) then
-                        call agregar_token(aux_tkn, 'tk_area_texto', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_area_texto', fila, columna)
 
                     elseif ((aux_tkn == 'Clave')) then
-                        call agregar_token(aux_tkn, 'tk_clave', fila, columna)    
+                        call agregar_token(aux_tkn, 'TKN_clave', fila, columna)    
 
                     elseif ((aux_tkn == 'Contenedor')) then
-                        call agregar_token(aux_tkn, 'tk_contenedor', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_contenedor', fila, columna)
                     
                         
                     !Palabras reservadas de propiedades
                     
                     elseif ((aux_tkn == 'setAncho')) then
-                        call agregar_token(aux_tkn, 'tk_setAncho', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setAncho', fila, columna)
                     
                     elseif ((aux_tkn == 'setAlto')) then
-                        call agregar_token(aux_tkn, 'tk_setAlto', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setAlto', fila, columna)
                     
                     elseif ((aux_tkn == 'setAlineacion')) then
-                        call agregar_token(aux_tkn, 'tk_setAlineacion', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion', fila, columna)
                     
                     elseif ((aux_tkn == 'setColorFondo')) then
-                        call agregar_token(aux_tkn, 'tk_setColorFondo', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setColorFondo', fila, columna)
 
                     elseif ((aux_tkn == 'setColorLetra')) then
-                        call agregar_token(aux_tkn, 'tk_setColorLetra', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setColorLetra', fila, columna)
                     
                     elseif ((aux_tkn == 'setTexto')) then
-                        call agregar_token(aux_tkn, 'tk_setTexto', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setTexto', fila, columna)
                     
                     elseif ((aux_tkn == 'setMarcada')) then
-                        call agregar_token(aux_tkn, 'tk_setMarc', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setMarc', fila, columna)
+                    
+                    elseif ((aux_tkn == 'false')) then
+                        call agregar_token(aux_tkn, 'TKN_False', fila, columna)
+
+                    elseif ((aux_tkn == 'true')) then
+                        call agregar_token(aux_tkn, 'TKN_True', fila, columna)
             
                     elseif ((aux_tkn == 'setGrupo')) then
-                        call agregar_token(aux_tkn, 'tk_setGrupo', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setGrupo', fila, columna)
                     
                     !Palabras reservadas de posicion
 
                     elseif ((aux_tkn == 'setPosicion')) then
-                        call agregar_token(aux_tkn, 'tk_setPosicion', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setPosicion', fila, columna)
                     
                     elseif (aux_tkn == 'this') then
-                        call agregar_token(aux_tkn, 'tk_this', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_this', fila, columna)
                     
                     elseif (aux_tkn == 'add') then
-                        call agregar_token(aux_tkn, 'tk_add', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_add', fila, columna)
                         
                     !Palabras reservadas de bloque
                     elseif (aux_tkn == 'Controles') then
-                        call agregar_token(aux_tkn, 'tk_nm_bloque_ctrls', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_nm_bloque_ctrls', fila, columna)
                     
                     elseif (aux_tkn == 'Propiedades') then
-                        call agregar_token(aux_tkn, 'tk_nm_bloque_props', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_nm_bloque_props', fila, columna)
                     
                     elseif (aux_tkn == 'Colocacion') then
-                        call agregar_token(aux_tkn, 'tk_nm_bloque_coloc', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_nm_bloque_coloc', fila, columna)
 
                     else 
-                        call agregar_token(aux_tkn, 'tk_id', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_id', fila, columna)
 
                     end if
 
@@ -257,7 +263,19 @@ program analizador_lexico
         end select
     end do
 
-    call imprimir_tokens
+    !Fase léxica
     call imprimir_errores
     call generar_json_tokens
+
+    !Fase sintáctica
+    call parser
+    call imprimir_errores_sintactico
+    call imprimir_etiquetas
+    call imprimir_botones
+    call imprimir_contenedores
+    call imprimir_claves
+    call imprimir_texto
+    call imprimir_chequeo
+    call imprimir_radio_botones
+    call imprimir_area_texto
 end program analizador_lexico
