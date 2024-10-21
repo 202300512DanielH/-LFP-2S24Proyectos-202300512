@@ -1,6 +1,5 @@
 MODULE token
-    use error
-    use error_sintactico
+    use errores
 
     use etiqueta
     use boton
@@ -257,6 +256,9 @@ contains
                         call agregar_error_sintactico(token_array(i+1)%lexema, 'TKN_id', token_array(i+1)%fila, token_array(i+1)%columna)
                     end if
                 end if
+
+
+                ! Verificación de tokens para propiedades
         
                 if (token_array(i)%tipo == 'TKN_id' .and. token_array(i+1)%tipo == 'TKN_punto') then
                     if (token_array(i+2)%tipo == 'TKN_setAncho') then
@@ -269,10 +271,12 @@ contains
                         elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
                             call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
                         else
+
                             call etiqueta_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
+
                     if (token_array(i+2)%tipo == 'TKN_setAlto') then
                         if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
                             call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)

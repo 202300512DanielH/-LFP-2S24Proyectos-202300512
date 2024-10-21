@@ -86,4 +86,41 @@ MODULE contenedor
         end if
 
     end subroutine imprimir_contenedores
+
+    subroutine contenedor_set_ancho(id, ancho)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: ancho
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(conteiner_array)) then
+            print *, "No hay etiquetas"
+        else
+            DO i = 1, size(conteiner_array)
+                if (trim(conteiner_array(i)%id) == id) then
+                    conteiner_array(i)%ancho = ancho
+                end if
+            END DO
+        end if
+
+    end subroutine contenedor_set_ancho
+
+    FUNCTION encontrar_contenedor_por_id(id)RESULT(encontrado)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        logical :: encontrado
+        integer :: i
+
+        encontrado = .FALSE.
+
+        if (.NOT. ALLOCATED(conteiner_array)) then
+            print *, "No hay contenedores"
+        else
+            DO i = 1, size(conteiner_array)
+                if (trim(conteiner_array(i)%id) == trim(id)) then
+                    encontrado = .TRUE.
+                    exit
+                end if
+            END DO
+        end if
+    End FUNCTION encontrar_contenedor_por_id
 END MODULE contenedor

@@ -1,5 +1,5 @@
 program analizador_lexico
-    use error
+    use errores
     use token
 
     implicit none
@@ -78,7 +78,7 @@ program analizador_lexico
                     columna = columna + 1
                     puntero = puntero + 1
                 else
-                    call agregar_error(char, "Token no reconocido", fila, columna)
+                    call agregar_error_lexico(char, "Token no reconocido", fila, columna)
                     columna = columna + 1
                     puntero = puntero + 1
                 end if
@@ -264,12 +264,15 @@ program analizador_lexico
     end do
 
     !Fase léxica
-    call imprimir_errores
+
     call generar_json_tokens
 
     !Fase sintáctica
     call parser
-    call imprimir_errores_sintactico
+
+
+    call guardar_errores_json
+
     call imprimir_etiquetas
     call imprimir_botones
     call imprimir_contenedores
@@ -278,4 +281,6 @@ program analizador_lexico
     call imprimir_chequeo
     call imprimir_radio_botones
     call imprimir_area_texto
+
+
 end program analizador_lexico

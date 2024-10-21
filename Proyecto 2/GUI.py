@@ -213,32 +213,70 @@ style.configure("Custom.Treeview.Heading",
                 foreground="black",
                 font=("Inter", 12, "bold"))
 
-# Crear tabla en el área azul con el estilo personalizado
-columns = ("#1", "#2", "#3", "#4", "#5")
+# Definir las columnas correctas
+columns = ("tipo", "linea", "columna", "token", "descripcion")
 
+# Crear la tabla con las nuevas columnas
 table = ttk.Treeview(table_frame, columns=columns, show="headings",
                      height=5, style="Custom.Treeview", yscrollcommand=scrollbar_table_y.set)
 
 # Definir los encabezados de las columnas
 for col in columns:
-    table.heading(col, text=f"Columna {col[-1]}")
+    table.heading(col, text=col.capitalize())
 
 # Ajustar el tamaño de cada columna
-table.column("#1", anchor="center", width=100)
-table.column("#2", anchor="center", width=150)
-table.column("#3", anchor="center", width=150)
-table.column("#4", anchor="center", width=150)
-table.column("#5", anchor="center", width=150)
-
-# Insertar filas de prueba (puedes eliminarlas o añadir tus datos)
-for i in range(10):
-    table.insert('', 'end', values=(f"Fila {i+1} C1", f"Fila {i+1} C2", f"Fila {i+1} C3", f"Fila {i+1} C4", f"Fila {i+1} C5"))
+table.column("tipo", anchor="center", width=150)
+table.column("linea", anchor="center", width=100)
+table.column("columna", anchor="center", width=100)
+table.column("token", anchor="center", width=150)
+table.column("descripcion", anchor="center", width=400)
 
 # Posicionar la tabla dentro del frame
 table.pack(expand=True, fill="both")
 
 # Configurar el scrollbar vertical para que funcione con la tabla
 scrollbar_table_y.config(command=table.yview)
+
+def actualizar_tabla_errores():
+    """Carga los errores desde errores.json en la tabla."""
+    try:
+        # Limpiar la tabla antes de insertar nuevos datos
+        for row in table.get_children():
+            table.delete(row)
+
+        # Cargar el archivo JSON y mostrar los errores en la tabla
+        with open("errores.json", "r", encoding="utf-8-sig", errors="replace") as file:
+            data = json.load(file)
+            for error in data:
+                # Preparar los datos para la tabla según el tipo de error
+                if error["tipo"] == "léxico":
+                    token = error["token_no_reconocido"]
+                    descripcion = error["mensaje_error"]
+                elif error["tipo"] == "sintáctico":
+                    token = error["ultimo_token"]
+                    descripcion = f"Token Esperado: {error['token_esperado']}"
+
+                # Insertar los datos en la tabla
+                table.insert('', 'end', values=(
+                    error["tipo"],
+                    error["linea"],
+                    error["columna"],
+                    token,
+                    descripcion
+                ))
+
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró el archivo errores.json")
+    except json.JSONDecodeError:
+        messagebox.showerror("Error", "El archivo JSON tiene un formato inválido")
+    except Exception as e:
+        messagebox.showerror("Error", f"Ocurrió un error inesperado: {e}")
+
+
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No se encontró el archivo errores.json")
+    except json.JSONDecodeError:
+        messagebox.showerror("Error", "El archivo JSON tiene un formato inválido")
 
 # Crear botones sin imágenes, solo texto (más pequeños y ajustados)
 button_1 = Button(
@@ -288,12 +326,16 @@ def ejecutar_analisis():
             messagebox.showerror("Error", f"Ocurrió un error al ejecutar Fortran:\n{stderr}")
         else:
             messagebox.showinfo("Resultado", f"Analisis completado con éxito.")
-            print(f"Salida de Fortran:\n{stdout}")
+            print(f"{stdout}")
+            actualizar_tabla_errores()
+             
 
     except FileNotFoundError:
         messagebox.showerror("Error", "No se encontró el archivo main.exe. Asegúrate de haberlo compilado.")
     except Exception as e:
         messagebox.showerror("Error", f"Ocurrió un error inesperado: {e}")
+
+
 
 button_2 = Button(
     text="Análisis",
