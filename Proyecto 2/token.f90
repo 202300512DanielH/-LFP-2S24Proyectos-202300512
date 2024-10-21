@@ -194,6 +194,76 @@ contains
 
             
             DO i = 1, size(token_array)
+
+                !verificacion de tokens parra los bloques
+                if (token_array(i)%tipo == 'TKN_menor') then
+                    if (token_array(i+1)%tipo == 'TKN_exp') then
+                        if (token_array(i+2)%tipo == 'TKN_guion') then
+                            if (token_array(i+3)%tipo == 'TKN_guion') then
+                                    if (token_array(i+4)%tipo == 'TKN_nm_bloque_ctrls') then
+                                        print *, "Bloque de controles"
+                                    elseif (token_array(i+4)%tipo == 'TKN_nm_bloque_props') then
+                                        print *, "Bloque de propiedades"
+                                    elseif (token_array(i+4)%tipo == 'TKN_nm_bloque_coloc') then
+                                        print *, "Bloque de colocacion"     
+                                    else
+                                        call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_nm_bloque_ctrls o TKN_nm_bloque_props o TKN_nm_bloque_coloc', token_array(i+5)%fila, token_array(i+5)%columna)
+                                    end if
+                            else
+                                call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_guion', token_array(i+3)%fila, token_array(i+3)%columna)
+                            end if
+                
+                        else
+                            call agregar_error_sintactico(token_array(i+2)%lexema, 'TKN_guion', token_array(i+3)%fila, token_array(i+3)%columna)
+                        end if
+                    else
+                        call agregar_error_sintactico(token_array(i+1)%lexema, 'TKN_exp', token_array(i+1)%fila, token_array(i+1)%columna)
+                    end if
+                end if
+
+
+
+                if (token_array(i)%tipo == 'TKN_nm_bloque_ctrls' .and. token_array(i+1)%tipo == 'TKN_guion') then
+                    if (token_array(i+2)%tipo == 'TKN_guion') then
+                        if (token_array(i+3)%tipo == 'TKN_mayor') then
+                           print *, "Fin de bloque de controles"       
+                        else
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_mayor', token_array(i+3)%fila, token_array(i+3)%columna)
+                        end if
+                    else
+                        call agregar_error_sintactico(token_array(i+2)%lexema, 'TKN_guion', token_array(i+1)%fila, token_array(i+1)%columna)
+                    end if
+                end if
+
+                if (token_array(i)%tipo == 'TKN_nm_bloque_props' .and. token_array(i+1)%tipo == 'TKN_guion') then
+                    if (token_array(i+2)%tipo == 'TKN_guion') then
+                        if (token_array(i+3)%tipo == 'TKN_mayor') then
+                           print *, "Fin de bloque de propiedades"       
+                        else
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_mayor', token_array(i+3)%fila, token_array(i+3)%columna)
+                        end if
+                    else
+                        call agregar_error_sintactico(token_array(i+2)%lexema, 'TKN_guion', token_array(i+1)%fila, token_array(i+1)%columna)
+                    end if
+                end if
+
+                if (token_array(i)%tipo == 'TKN_nm_bloque_coloc' .and. token_array(i+1)%tipo == 'TKN_guion') then
+                    if (token_array(i+2)%tipo == 'TKN_guion') then
+                        if (token_array(i+3)%tipo == 'TKN_mayor') then
+                           print *, "Fin de bloque de colocacion"       
+                        else
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_mayor', token_array(i+3)%fila, token_array(i+3)%columna)
+                        end if
+                    else
+                        call agregar_error_sintactico(token_array(i+2)%lexema, 'TKN_guion', token_array(i+1)%fila, token_array(i+1)%columna)
+                    end if
+                end if
+
+
+                
+
+                
+
                 ! Verificación de tokens para controles 
                 if (token_array(i)%tipo == 'TKN_etiqueta') then
                     if (token_array(i+1)%tipo == 'TKN_id' .and. token_array(i+2)%tipo == 'TKN_pyc') then
@@ -202,6 +272,7 @@ contains
                         call agregar_error_sintactico(token_array(i+1)%lexema, 'TKN_id', token_array(i+1)%fila, token_array(i+1)%columna)
                     end if
                 end if
+
                 if (token_array(i)%tipo == 'TKN_boton') then
                     if (token_array(i+1)%tipo == 'TKN_id' .and. token_array(i+2)%tipo == 'TKN_pyc') then
                         call agregar_boton(token_array(i+1)%lexema)
