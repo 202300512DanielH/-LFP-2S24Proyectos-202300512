@@ -153,6 +153,13 @@ program analizador_lexico
                     
                     elseif ((aux_tkn == 'setAlineacion')) then
                         call agregar_token(aux_tkn, 'TKN_setAlineacion', fila, columna)
+
+                    elseif ((aux_tkn == 'centro')) then
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)    
+                    elseif ((aux_tkn == 'izquierdo')) then
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)
+                    elseif ((aux_tkn == 'derecho')) then
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)
                     
                     elseif ((aux_tkn == 'setColorFondo')) then
                         call agregar_token(aux_tkn, 'TKN_setColorFondo', fila, columna)
@@ -269,10 +276,10 @@ program analizador_lexico
 
     !Fase sintáctica
     call parser
-
-
+    !Errores
     call guardar_errores_json
 
+    !Resultado Final de las 2 fases de análisis
     call imprimir_etiquetas
     call imprimir_botones
     call imprimir_contenedores

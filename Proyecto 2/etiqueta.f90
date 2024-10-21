@@ -17,7 +17,7 @@ MODULE etiqueta
         CHARACTER(LEN = 50) :: posicion_x
         CHARACTER(LEN = 50) :: posicion_y
         CHARACTER(LEN = 50) :: this
-        CHARACTER(LEN = 50) :: add
+        CHARACTER(LEN = 200) :: add
 
     End type Tag
 
@@ -41,6 +41,7 @@ contains
         nuevo_etiqueta%alto = ""
         nuevo_etiqueta%ancho = ""
         nuevo_etiqueta%texto = ""
+        nuevo_etiqueta%alineacion_texto = ""
         nuevo_etiqueta%color_texto_r = ""
         nuevo_etiqueta%color_texto_g = ""
         nuevo_etiqueta%color_texto_b = ""
@@ -49,6 +50,8 @@ contains
         nuevo_etiqueta%color_fondo_b = ""
         nuevo_etiqueta%posicion_x = ""
         nuevo_etiqueta%posicion_y = ""
+        nuevo_etiqueta%this = ""
+        nuevo_etiqueta%add = ""
 
 
         ! Agrego el nuevo etiqueta a la lista de etiquetas
@@ -80,6 +83,7 @@ contains
                 print *, 'alto: ', trim(etiqueta_array(i)%alto)
                 print *, 'ancho: ', trim(etiqueta_array(i)%ancho)
                 print *, 'texto: ', trim(etiqueta_array(i)%texto)
+                print *, 'alineacion_texto: ', trim(etiqueta_array(i)%alineacion_texto)
                 print *, 'color_texto_r: ', trim(etiqueta_array(i)%color_texto_r)
                 print *, 'color_texto_g: ', trim(etiqueta_array(i)%color_texto_g)
                 print *, 'color_texto_b: ', trim(etiqueta_array(i)%color_texto_b)
@@ -88,6 +92,8 @@ contains
                 print *, 'color_fondo_b: ', trim(etiqueta_array(i)%color_fondo_b)
                 print *, 'posicion_x: ', trim(etiqueta_array(i)%posicion_x)
                 print *, 'posicion_y: ', trim(etiqueta_array(i)%posicion_y)
+                print *, 'this: ', trim(etiqueta_array(i)%this)
+                print *, 'add: ', trim(etiqueta_array(i)%add)
                 print *, '---------------------------------'
             END DO
         end if
@@ -148,6 +154,24 @@ contains
         end if
 
     end subroutine etiqueta_set_texto
+
+    subroutine etiqueta_set_alineacion_texto(id, alineacion_texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: alineacion_texto
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(etiqueta_array)) then
+            print *, "No hay etiquetas"
+        else
+            DO i = 1, size(etiqueta_array)
+                if (trim(etiqueta_array(i)%id) == id) then
+                    etiqueta_array(i)%alineacion_texto = alineacion_texto
+                end if
+            END DO
+        end if
+
+    end subroutine etiqueta_set_alineacion_texto
 
     subroutine etiqueta_set_color_texto(id, color_texto_r, color_texto_g, color_texto_b)
         CHARACTER(LEN=*), INTENT(IN) :: id
@@ -212,6 +236,47 @@ contains
         end if
 
     end subroutine etiqueta_set_posicion
+
+    subroutine etiqueta_set_this(id, this)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: this
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(etiqueta_array)) then
+            print *, "No hay etiquetas"
+        else
+            DO i = 1, size(etiqueta_array)
+                if (trim(etiqueta_array(i)%id) == id) then
+                    etiqueta_array(i)%this = this
+                end if
+            END DO
+        end if
+
+    end subroutine etiqueta_set_this
+
+    subroutine etiqueta_set_add(id, add)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: add
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(etiqueta_array)) then
+            print *, "No hay etiquetas"
+        else
+            DO i = 1, size(etiqueta_array)
+                if (trim(etiqueta_array(i)%id) == id) then
+
+                    if (trim(etiqueta_array(i)%add) /= "") then
+                        etiqueta_array(i)%add = trim(etiqueta_array(i)%add) // ", " // add
+                    else
+                        etiqueta_array(i)%add = trim(add)
+                    end if
+                end if
+            END DO
+        end if
+
+    end subroutine etiqueta_set_add
 
     ! Función para buscar una etiqueta por su ID
     FUNCTION buscar_etiqueta_por_id(id) RESULT(encontrado)

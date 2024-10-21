@@ -186,12 +186,13 @@ contains
     subroutine parser()
         integer :: i
     
-        ! Filtrar los comentarios antes del parseo
-        call filtrar_comentarios()
-    
         if (.NOT. ALLOCATED(token_array)) then
             print *, "No hay tokens"
         else
+            ! Filtrar los comentarios antes del parseo
+            call filtrar_comentarios()
+
+            
             DO i = 1, size(token_array)
                 ! Verificación de tokens para controles 
                 if (token_array(i)%tipo == 'TKN_etiqueta') then
@@ -251,7 +252,7 @@ contains
 
                 if (token_array(i)%tipo == 'TKN_area_texto') then
                     if (token_array(i+1)%tipo == 'TKN_id' .and. token_array(i+2)%tipo == 'TKN_pyc') then
-                        call agregar_radio_boton(token_array(i+1)%lexema)
+                        call agregar_area_Texto(token_array(i+1)%lexema)
                     else
                         call agregar_error_sintactico(token_array(i+1)%lexema, 'TKN_id', token_array(i+1)%fila, token_array(i+1)%columna)
                     end if
@@ -273,6 +274,7 @@ contains
                         else
 
                             call etiqueta_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call contenedor_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
@@ -288,6 +290,7 @@ contains
                             call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
                         else
                             call etiqueta_set_alto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call contenedor_set_alto(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
@@ -302,6 +305,22 @@ contains
                             call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
                         else
                             call etiqueta_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call contenedor_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                        end if
+                    end if
+
+                    if (token_array(i+2)%tipo == 'TKN_setAlineacion') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_setAlineacion_Pos') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_setAlineacion_Pos', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+5)%fila, token_array(i+5)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
+                        else
+                            call etiqueta_set_alineacion_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call contenedor_set_alineacion_texto(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
@@ -324,6 +343,30 @@ contains
                             call agregar_error_sintactico(token_array(i+10)%lexema, 'TKN_pyc', token_array(i+10)%fila, token_array(i+10)%columna)
                         else
                             call etiqueta_set_color_texto(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
+                            call contenedor_set_color_texto(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
+                        end if
+                    end if
+
+                    if (token_array(i+2)%tipo == 'TKN_setColorFondo') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_num') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_num', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_coma') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_coma', token_array(i+5)%fila, token_array(i+5)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_num') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_num', token_array(i+6)%fila, token_array(i+6)%columna)
+                        elseif (token_array(i+7)%tipo .ne. 'TKN_coma') then
+                            call agregar_error_sintactico(token_array(i+7)%lexema, 'TKN_coma', token_array(i+7)%fila, token_array(i+7)%columna)
+                        elseif (token_array(i+8)%tipo .ne. 'TKN_num') then
+                            call agregar_error_sintactico(token_array(i+8)%lexema, 'TKN_num', token_array(i+8)%fila, token_array(i+8)%columna)
+                        elseif (token_array(i+9)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+9)%lexema, 'TKN_par_der', token_array(i+9)%fila, token_array(i+9)%columna)
+                        elseif (token_array(i+10)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+10)%lexema, 'TKN_pyc', token_array(i+10)%fila, token_array(i+10)%columna)
+                        else
+                            call etiqueta_set_color_fondo(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
+                            call contenedor_set_color_fondo(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
                         end if
                     end if
         
@@ -342,9 +385,43 @@ contains
                             call agregar_error_sintactico(token_array(i+8)%lexema, 'TKN_pyc', token_array(i+8)%fila, token_array(i+8)%columna)
                         else
                             call etiqueta_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call contenedor_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                        end if
+                    end if
+
+                    if (token_array(i+2)%tipo == 'TKN_add') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_id') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_id', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+7)%fila, token_array(i+7)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+8)%fila, token_array(i+8)%columna)
+                        else
+                            call etiqueta_set_add(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call contenedor_set_add(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
                 end if
+
+                if (token_array(i)%tipo == 'TKN_this' .and. token_array(i+1)%tipo == 'TKN_punto') then
+                    if (token_array(i+2)%tipo .ne. 'TKN_add') then
+                        call agregar_error_sintactico(token_array(i+2)%lexema, 'TKN_add', token_array(i+3)%fila, token_array(i+3)%columna)
+                    elseif (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                        call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                    elseif (token_array(i+4)%tipo .ne. 'TKN_id') then
+                        call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_id', token_array(i+4)%fila, token_array(i+4)%columna)
+                    elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                        call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+7)%fila, token_array(i+7)%columna)
+                    elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                        call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+8)%fila, token_array(i+8)%columna)
+                    else
+                        call etiqueta_set_this(token_array(i)%lexema, token_array(i+4)%lexema)
+                        call contenedor_set_this(token_array(i)%lexema, token_array(i+4)%lexema)
+                    end if
+                end if
+
             END DO
         end if
         

@@ -1,2 +1,3 @@
 [
+  { "tipo": "sintáctico", "linea": "90", "columna": "16", "ultimo_token": "add", "token_esperado": "TKN_id" }
 ]
