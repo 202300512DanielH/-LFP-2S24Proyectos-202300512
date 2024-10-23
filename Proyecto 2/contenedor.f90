@@ -15,7 +15,6 @@ MODULE contenedor
             CHARACTER(LEN = 50) :: color_fondo_b
             CHARACTER(LEN = 50) :: posicion_x
             CHARACTER(LEN = 50) :: posicion_y
-            CHARACTER(LEN = 50) :: this
             CHARACTER(LEN = 200) :: add
         End type conteiner
     
@@ -45,7 +44,6 @@ MODULE contenedor
         nuevo_contenedor%color_fondo_b = ""
         nuevo_contenedor%posicion_x = ""
         nuevo_contenedor%posicion_y = ""
-        nuevo_contenedor%this = ""
         nuevo_contenedor%add = ""
 
 
@@ -87,7 +85,6 @@ MODULE contenedor
                 print *, 'color_fondo_b: ', trim(conteiner_array(i)%color_fondo_b)
                 print *, 'posicion_x: ', trim(conteiner_array(i)%posicion_x)
                 print *, 'posicion_y: ', trim(conteiner_array(i)%posicion_y)
-                print *, 'this: ', trim(conteiner_array(i)%this)
                 print *, 'add: ', trim(conteiner_array(i)%add)
                 print *, '---------------------------------'
             END DO
@@ -230,24 +227,6 @@ MODULE contenedor
         end if
 
     end subroutine contenedor_set_posicion
-
-    subroutine contenedor_set_this(id, this)
-        CHARACTER(LEN=*), INTENT(IN) :: id
-        CHARACTER(LEN=*), INTENT(IN) :: this
-        integer :: i
-
-        ! Verifica si la memoria ha sido asignada para el arreglo
-        if (.NOT. ALLOCATED(conteiner_array)) then
-            print *, "No hay etiquetas"
-        else
-            DO i = 1, size(conteiner_array)
-                if (trim(conteiner_array(i)%id) == id) then
-                    conteiner_array(i)%this = this
-                end if
-            END DO
-        end if
-
-    end subroutine contenedor_set_this
 
     subroutine contenedor_set_add(id, add)
         CHARACTER(LEN=*), INTENT(IN) :: id

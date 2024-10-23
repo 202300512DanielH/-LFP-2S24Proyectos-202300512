@@ -34,6 +34,7 @@ MODULE clave
         nuevo_clave%alto = "25"
         nuevo_clave%ancho = "100"
         nuevo_clave%texto = ""
+        nuevo_clave%alineacion_texto = "izquierda"
         nuevo_clave%color_texto_r = ""
         nuevo_clave%color_texto_g = ""
         nuevo_clave%color_texto_b = ""
@@ -65,7 +66,7 @@ MODULE clave
 
         ! Verifica si la memoria ha sido asignada para el arreglo
         if (.NOT. ALLOCATED(key_array)) then
-            print *, "No hay clavees"
+            print *, "No hay claves"
         else
             print *, "claves encontrados: ", size(key_array)
             DO i = 1, size(key_array)
@@ -86,4 +87,61 @@ MODULE clave
         end if
 
     end subroutine imprimir_claves
+
+    subroutine clave_set_texto(id, texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: texto
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(key_array)) then
+            print *, "No hay claves"
+        else
+            DO i = 1, size(key_array)
+                if (key_array(i)%id == id) then
+                    key_array(i)%texto = texto
+                end if
+            END DO
+        end if
+
+    end subroutine clave_set_texto
+
+    subroutine clave_set_alineacion_texto(id, alineacion_texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: alineacion_texto
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(key_array)) then
+            print *, "No hay claves"
+        else
+            DO i = 1, size(key_array)
+                if (key_array(i)%id == id) then
+                    key_array(i)%alineacion_texto = alineacion_texto
+                end if
+            END DO
+        end if
+
+    end subroutine clave_set_alineacion_texto
+
+    subroutine clave_set_posicion(id, posicion_x, posicion_y)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_x
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_y
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(key_array)) then
+            print *, "No hay claves"
+        else
+            DO i = 1, size(key_array)
+                if (key_array(i)%id == id) then
+                    key_array(i)%posicion_x = posicion_x
+                    key_array(i)%posicion_y = posicion_y
+                end if
+            END DO
+        end if
+
+    end subroutine clave_set_posicion
+
 END MODULE clave

@@ -1,6 +1,7 @@
 program analizador_lexico
     use errores
     use token
+    use traductor
 
     implicit none
     integer :: len, fila, columna, estado, puntero, i, num_lineas
@@ -155,11 +156,11 @@ program analizador_lexico
                         call agregar_token(aux_tkn, 'TKN_setAlineacion', fila, columna)
 
                     elseif ((aux_tkn == 'centro')) then
-                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)    
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_centro', fila, columna)    
                     elseif ((aux_tkn == 'izquierdo')) then
-                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Izq', fila, columna)
                     elseif ((aux_tkn == 'derecho')) then
-                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Pos', fila, columna)
+                        call agregar_token(aux_tkn, 'TKN_setAlineacion_Der', fila, columna)
                     
                     elseif ((aux_tkn == 'setColorFondo')) then
                         call agregar_token(aux_tkn, 'TKN_setColorFondo', fila, columna)
@@ -280,6 +281,7 @@ program analizador_lexico
     call guardar_errores_json
 
     !Resultado Final de las 2 fases de análisis
+    call imprimir_body
     call imprimir_etiquetas
     call imprimir_botones
     call imprimir_contenedores
@@ -288,6 +290,8 @@ program analizador_lexico
     call imprimir_chequeo
     call imprimir_radio_botones
     call imprimir_area_texto
+    call generar_html
+    
 
 
 end program analizador_lexico

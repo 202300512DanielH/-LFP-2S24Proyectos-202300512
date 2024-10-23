@@ -9,6 +9,7 @@ MODULE token
     use chequeo
     use radio_boton
     use area_Texto
+    use cuerpo
     implicit none
 
     type :: Tkn
@@ -191,7 +192,6 @@ contains
         else
             ! Filtrar los comentarios antes del parseo
             call filtrar_comentarios()
-
             
             DO i = 1, size(token_array)
 
@@ -250,7 +250,8 @@ contains
                 if (token_array(i)%tipo == 'TKN_nm_bloque_coloc' .and. token_array(i+1)%tipo == 'TKN_guion') then
                     if (token_array(i+2)%tipo == 'TKN_guion') then
                         if (token_array(i+3)%tipo == 'TKN_mayor') then
-                           print *, "Fin de bloque de colocacion"       
+                           print *, "Fin de bloque de colocacion" 
+                           print *, "---------------------------"
                         else
                             call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_mayor', token_array(i+3)%fila, token_array(i+3)%columna)
                         end if
@@ -346,6 +347,7 @@ contains
 
                             call etiqueta_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
                             call contenedor_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call boton_set_ancho(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
@@ -362,6 +364,7 @@ contains
                         else
                             call etiqueta_set_alto(token_array(i)%lexema, token_array(i+4)%lexema)
                             call contenedor_set_alto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call boton_set_alto(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
         
@@ -377,21 +380,63 @@ contains
                         else
                             call etiqueta_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
                             call contenedor_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call boton_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            !call chequeo_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call clave_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call radio_boton_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call area_Texto_set_texto(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
 
                     if (token_array(i+2)%tipo == 'TKN_setAlineacion') then
                         if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
                             call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
-                        elseif (token_array(i+4)%tipo .ne. 'TKN_setAlineacion_Pos') then
-                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_setAlineacion_Pos', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_setAlineacion_centro') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_setAlineacion_centro', token_array(i+4)%fila, token_array(i+4)%columna)
                         elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
                             call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+5)%fila, token_array(i+5)%columna)
                         elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
                             call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
                         else
-                            call etiqueta_set_alineacion_texto(token_array(i)%lexema, token_array(i+4)%lexema)
-                            call contenedor_set_alineacion_texto(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call etiqueta_set_alineacion_texto(token_array(i)%lexema, 'center')
+                            call contenedor_set_alineacion_texto(token_array(i)%lexema, 'center')
+                            call boton_set_alineacion_texto(token_array(i)%lexema, 'center')
+                            call clave_set_alineacion_texto(token_array(i)%lexema, 'center')
+                        end if
+                    end if
+
+                    if (token_array(i+2)%tipo == 'TKN_setAlineacion') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_setAlineacion_centro') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_setAlineacion_Izq', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+5)%fila, token_array(i+5)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
+                        else
+                            call etiqueta_set_alineacion_texto(token_array(i)%lexema, 'left')
+                            call contenedor_set_alineacion_texto(token_array(i)%lexema, 'left')
+                            call boton_set_alineacion_texto(token_array(i)%lexema, 'left')
+                            call clave_set_alineacion_texto(token_array(i)%lexema, 'left')
+                        end if
+                    end if
+
+                    
+                    if (token_array(i+2)%tipo == 'TKN_setAlineacion') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo .ne. 'TKN_setAlineacion_centro') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_setAlineacion_Der', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+5)%fila, token_array(i+5)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
+                        else
+                            call etiqueta_set_alineacion_texto(token_array(i)%lexema, 'right')
+                            call contenedor_set_alineacion_texto(token_array(i)%lexema, 'right')
+                            call boton_set_alineacion_texto(token_array(i)%lexema, 'right')
+                            call clave_set_alineacion_texto(token_array(i)%lexema, 'right')
                         end if
                     end if
         
@@ -415,6 +460,7 @@ contains
                         else
                             call etiqueta_set_color_texto(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
                             call contenedor_set_color_texto(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
+                            call boton_set_color_texto(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
                         end if
                     end if
 
@@ -438,6 +484,7 @@ contains
                         else
                             call etiqueta_set_color_fondo(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
                             call contenedor_set_color_fondo(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
+                            call boton_set_color_fondo(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema, token_array(i+8)%lexema)
                         end if
                     end if
         
@@ -457,6 +504,12 @@ contains
                         else
                             call etiqueta_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
                             call contenedor_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call boton_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call clave_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call texto_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call chequeo_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call radio_boton_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
+                            call area_Texto_set_posicion(token_array(i)%lexema, token_array(i+4)%lexema, token_array(i+6)%lexema)
                         end if
                     end if
 
@@ -472,8 +525,31 @@ contains
                         else
                             call etiqueta_set_add(token_array(i)%lexema, token_array(i+4)%lexema)
                             call contenedor_set_add(token_array(i)%lexema, token_array(i+4)%lexema)
+                            call boton_set_add(token_array(i)%lexema, token_array(i+4)%lexema)
                         end if
                     end if
+
+                    if (token_array(i+2)%tipo == 'TKN_setMarc') then
+                        if (token_array(i+3)%tipo .ne. 'TKN_par_izq') then
+                            call agregar_error_sintactico(token_array(i+3)%lexema, 'TKN_par_izq', token_array(i+3)%fila, token_array(i+3)%columna)
+                        elseif (token_array(i+4)%tipo /= 'TKN_True' .and. token_array(i+4)%tipo /= 'TKN_False') then
+                            call agregar_error_sintactico(token_array(i+4)%lexema, 'TKN_True o TKN_False', token_array(i+4)%fila, token_array(i+4)%columna)
+                        elseif (token_array(i+5)%tipo .ne. 'TKN_par_der') then
+                            call agregar_error_sintactico(token_array(i+5)%lexema, 'TKN_par_der', token_array(i+5)%fila, token_array(i+5)%columna)
+                        elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
+                            call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+6)%fila, token_array(i+6)%columna)
+                        else
+                            if (token_array(i+4)%tipo == 'TKN_True') then
+                                call chequeo_set_marca(token_array(i)%lexema, 'checked')
+                                call radio_boton_set_marca(token_array(i)%lexema, 'checked')
+                            else
+                                call chequeo_set_marca(token_array(i)%lexema, '')
+                                call radio_boton_set_marca(token_array(i)%lexema, '')
+                            end if
+                        end if
+                    end if
+                    
+
                 end if
 
                 if (token_array(i)%tipo == 'TKN_this' .and. token_array(i+1)%tipo == 'TKN_punto') then
@@ -488,8 +564,7 @@ contains
                     elseif (token_array(i+6)%tipo .ne. 'TKN_pyc') then
                         call agregar_error_sintactico(token_array(i+6)%lexema, 'TKN_pyc', token_array(i+8)%fila, token_array(i+8)%columna)
                     else
-                        call etiqueta_set_this(token_array(i)%lexema, token_array(i+4)%lexema)
-                        call contenedor_set_this(token_array(i)%lexema, token_array(i+4)%lexema)
+                        call agregar_body(token_array(i+4)%lexema)
                     end if
                 end if
 

@@ -7,6 +7,7 @@ MODULE chequeo
             CHARACTER(LEN = 20) :: ancho
             CHARACTER(LEN = 200) :: texto
             CHARACTER(LEN = 200) :: alineacion_texto
+            CHARACTER(LEN = 50) :: Marca
             CHARACTER(LEN = 50) :: color_texto_r
             CHARACTER(LEN = 50) :: color_texto_g
             CHARACTER(LEN = 50) :: color_texto_b
@@ -32,8 +33,10 @@ MODULE chequeo
         nuevo_chequeo%id = id
         nuevo_chequeo%tipo = 'chequeo'
         nuevo_chequeo%alto = "25"
-        nuevo_chequeo%ancho = "100"
+        nuevo_chequeo%ancho = "25"
         nuevo_chequeo%texto = ""
+        nuevo_chequeo%alineacion_texto = "izquierda"
+        nuevo_chequeo%Marca = ""
         nuevo_chequeo%color_texto_r = ""
         nuevo_chequeo%color_texto_g = ""
         nuevo_chequeo%color_texto_b = ""
@@ -73,6 +76,8 @@ MODULE chequeo
                 print *, 'alto: ', trim(check_array(i)%alto)
                 print *, 'ancho: ', trim(check_array(i)%ancho)
                 print *, 'texto: ', trim(check_array(i)%texto)
+                print *, 'alineacion_texto: ', trim(check_array(i)%alineacion_texto)
+                print *, 'Marca: ', trim(check_array(i)%Marca)
                 print *, 'color_texto_r: ', trim(check_array(i)%color_texto_r)
                 print *, 'color_texto_g: ', trim(check_array(i)%color_texto_g)
                 print *, 'color_texto_b: ', trim(check_array(i)%color_texto_b)
@@ -86,4 +91,61 @@ MODULE chequeo
         end if
 
     end subroutine imprimir_chequeo
+
+    subroutine chequeo_set_texto(id, texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: texto
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(check_array)) then
+            print *, "No hay chequeo"
+        else
+            DO i = 1, size(check_array)
+                if (trim(check_array(i)%id) == trim(id)) then
+                    check_array(i)%texto = texto
+                end if
+            END DO
+        end if
+
+    end subroutine chequeo_set_texto
+
+     subroutine chequeo_set_marca(id, Marca)
+         CHARACTER(LEN=*), INTENT(IN) :: id
+         CHARACTER(LEN=*), INTENT(IN) :: Marca
+         integer :: i
+
+          !Verifica si la memoria ha sido asignada para el arreglo
+         if (.NOT. ALLOCATED(check_array)) then
+             print *, "No hay chequeo"
+         else
+             DO i = 1, size(check_array)
+                 if (trim(check_array(i)%id) == id) then
+                     check_array(i)%Marca = Marca
+                 end if
+             END DO
+         end if
+     end subroutine chequeo_set_marca
+
+     subroutine chequeo_set_posicion(id, posicion_x, posicion_y)
+         CHARACTER(LEN=*), INTENT(IN) :: id
+         CHARACTER(LEN=*), INTENT(IN) :: posicion_x
+         CHARACTER(LEN=*), INTENT(IN) :: posicion_y
+         integer :: i
+
+          !Verifica si la memoria ha sido asignada para el arreglo
+         if (.NOT. ALLOCATED(check_array)) then
+             print *, "No hay chequeo"
+         else
+             DO i = 1, size(check_array)
+                 if (trim(check_array(i)%id) == id) then
+                     check_array(i)%posicion_x = posicion_x
+                     check_array(i)%posicion_y = posicion_y
+                 end if
+             END DO
+         end if
+     end subroutine chequeo_set_posicion
+
+
+
 END MODULE chequeo

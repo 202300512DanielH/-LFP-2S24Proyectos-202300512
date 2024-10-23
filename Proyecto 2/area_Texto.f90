@@ -31,8 +31,8 @@ MODULE area_Texto
         !Inicializo los datos del nuevo etiqueta
         nuevo_area_Texto%id = id
         nuevo_area_Texto%tipo = 'area_Texto'
-        nuevo_area_Texto%alto = "25"
-        nuevo_area_Texto%ancho = "100"
+        nuevo_area_Texto%alto = "150"
+        nuevo_area_Texto%ancho = "150"
         nuevo_area_Texto%texto = ""
         nuevo_area_Texto%color_texto_r = ""
         nuevo_area_Texto%color_texto_g = ""
@@ -86,4 +86,43 @@ MODULE area_Texto
         end if
 
     end subroutine imprimir_area_Texto
+
+    SUBROUTINE area_Texto_set_texto(id, texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: texto
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(text_Area_array)) then
+            print *, "No hay area_Textoes"
+        else
+            DO i = 1, size(text_Area_array)
+                if (text_Area_array(i)%id == id) then
+                    text_Area_array(i)%texto = texto
+                end if
+            END DO
+        end if
+
+    END SUBROUTINE area_Texto_set_texto
+
+    SUBROUTINE area_Texto_set_posicion(id, posicion_x, posicion_y)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_x
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_y
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(text_Area_array)) then
+            print *, "No hay area_Textoes"
+        else
+            DO i = 1, size(text_Area_array)
+                if (text_Area_array(i)%id == id) then
+                    text_Area_array(i)%posicion_x = posicion_x
+                    text_Area_array(i)%posicion_y = posicion_y
+                end if
+            END DO
+        end if
+
+    END SUBROUTINE area_Texto_set_posicion
+
 END MODULE area_Texto

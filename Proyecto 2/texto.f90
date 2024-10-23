@@ -65,7 +65,7 @@ MODULE texto
 
         ! Verifica si la memoria ha sido asignada para el arreglo
         if (.NOT. ALLOCATED(text_array)) then
-            print *, "No hay textoes"
+            print *, "No hay textos"
         else
             print *, "textoes encontrados: ", size(text_array)
             DO i = 1, size(text_array)
@@ -86,4 +86,66 @@ MODULE texto
         end if
 
     end subroutine imprimir_texto
+
+    subroutine texto_set_texto(id, texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: texto
+
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(text_array)) then
+            print *, "No hay textoes"
+        else
+            DO i = 1, size(text_array)
+                if (text_array(i)%id == id) then
+                    text_array(i)%texto = texto
+                    return
+                end if
+            END DO
+        end if
+
+    end subroutine texto_set_texto
+
+    subroutine texto_set_alineacion_texto(id, alineacion_texto)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: alineacion_texto
+
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(text_array)) then
+            print *, "No hay textoes"
+        else
+            DO i = 1, size(text_array)
+                if (text_array(i)%id == id) then
+                    text_array(i)%alineacion_texto = alineacion_texto
+                    return
+                end if
+            END DO
+        end if
+
+    end subroutine texto_set_alineacion_texto 
+
+    subroutine texto_set_posicion(id, posicion_x, posicion_y)
+        CHARACTER(LEN=*), INTENT(IN) :: id
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_x
+        CHARACTER(LEN=*), INTENT(IN) :: posicion_y
+
+        integer :: i
+
+        ! Verifica si la memoria ha sido asignada para el arreglo
+        if (.NOT. ALLOCATED(text_array)) then
+            print *, "No hay textoes"
+        else
+            DO i = 1, size(text_array)
+                if (text_array(i)%id == id) then
+                    text_array(i)%posicion_x = posicion_x
+                    text_array(i)%posicion_y = posicion_y
+                    return
+                end if
+            END DO
+        end if
+
+    end subroutine texto_set_posicion
 END MODULE texto
